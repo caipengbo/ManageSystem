@@ -1,0 +1,41 @@
+/*
+* commodity_input.html css
+*/
+#view_position {
+	width:80%;
+	height: 100%;
+	padding-left:200px;
+	padding-top:20px;
+}
+#commodity_input div {
+	margin-bottom:20px;
+}
+.show_all_commodity {
+	width:50px;
+	float:right;
+}
+.count_all_commodity {
+	font-size: 30px;
+	color: red;
+}
+#type_radio input {
+	margin-left:30px; 
+}
+/*
+* commodity_modify.html css
+*/
+#commodity_modify div {
+	margin-bottom:20px;
+}
+/*
+* sale_input.html css
+*/
+.commodity_info {
+	margin-bottom: 15px;
+	font-size: 15px;
+}
+.commodity_info span {
+	margin-left: 20px;
+	font-size: 20px;
+	color: red;
+}

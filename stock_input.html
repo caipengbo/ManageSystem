@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>进货入库</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="css/easyui.css">
+	<link rel="stylesheet" type="text/css" href="css/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/app.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+</head>
+<body>
+	<div class="easyui-panel" id="view_position">
+			<form class="stock_input" method="post" action="">
+			<div style="margin-bottom:20px">
+				<span>商品名称：</span>
+				<input class="easyui-combobox" data-options="
+				url:'',
+				method:'get',
+				valueField:'id',
+				textField:'text',
+				onSelect: function(rec){
+					
+				}
+				" style="width:200px">
+			</div>
+			<div style="margin-bottom:20px">
+				<div class="easyui-panel" title="商品标签" style="width:260px;height:200px;padding:10px">
+					<div class="commodity_info">类别：<span id="show_type">白酒</span></div>
+					<div class="commodity_info">库存：<span id="show_num">500</span></div>
+					<div class="commodity_info">进价：<span id="show_cost">2.5</span></div>
+					<div class="commodity_info">定价：<span id="show_price">5.0</span></div>
+				</div>
+			</div>
+			<div style="margin-bottom:20px">
+				<span>进货数目：</span>
+				<input class="easyui-numberbox" data-options="prompt:''" style="width:60px">
+				<span  id="show_unit" style="margin-left:10px">JS控制小单位</span>
+			</div>
+			</form>
+			<div style="margin-bottom:20px">
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px">入库</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()" style="width:80px;margin-left:20px">清空</a>
+			</div>
+	</div>
+
+</body>
+</html>

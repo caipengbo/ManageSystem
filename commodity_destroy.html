@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>商品损耗</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="css/easyui.css">
+	<link rel="stylesheet" type="text/css" href="css/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/app.css">
+</head>
+<body>
+	<div class="easyui-panel" id="view_position">
+			<form class="stock_input" method="post" action="">
+			<div style="margin-bottom:20px">
+				<span>商品名称：</span>
+				<input class="easyui-combobox" data-options="
+				url:'combobox.php',
+				method:'get',
+				valueField:'id',
+				textField:'text',
+				" style="width:200px">
+			</div>
+			<div style="margin-bottom:20px">
+				<div class="easyui-panel" title="商品名字" style="width:260px;height:200px;padding:10px">
+					<div class="commodity_info">类别：<span>白酒</span></div>
+					<div class="commodity_info">库存：<span>500</span></div>
+					<div class="commodity_info">进价：<span>2.5</span></div>
+					<div class="commodity_info">定价：<span>5.0</span></div>
+				</div>
+			</div>
+			<div style="margin-bottom:20px">
+				<span>损耗数目：</span>
+				<input class="easyui-numberbox" data-options="prompt:''" style="width:60px">
+				<span style="margin-left:20px">
+					<select class="easyui-combobox" name=""  style="width:50px;">
+						<option value="">盒</option>
+						<option value="">瓶</option>
+						<option value="">罐</option>
+					</select>
+				</span>
+			</div>
+			</form>
+			<div style="margin-bottom:20px">
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px">确认</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()" style="width:80px;margin-left:20px">清空</a>
+			</div>
+	</div>
+	
+
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+</body>
+</html>
