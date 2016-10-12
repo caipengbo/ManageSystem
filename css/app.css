@@ -1,12 +1,17 @@
-/*
-* commodity_input.html css
-*/
 #view_position {
 	width:80%;
 	height: 100%;
 	padding-left:200px;
 	padding-top:20px;
 }
+#view_position_2 {
+	padding-left:10px;
+	padding-top:20px;
+}
+/*
+* commodity_input.html css
+*/
+
 #commodity_input div {
 	margin-bottom:20px;
 }
@@ -22,11 +27,9 @@
 	margin-left:30px; 
 }
 /*
-* commodity_modify.html css
+commodity_modify.html css
 */
-#commodity_modify div {
-	margin-bottom:20px;
-}
+
 /*
 * sale_input.html css
 */

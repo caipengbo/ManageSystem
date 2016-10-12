@@ -6,28 +6,64 @@
 	<link rel="stylesheet" type="text/css" href="css/easyui.css">
 	<link rel="stylesheet" type="text/css" href="css/icon.css">
 	<link rel="stylesheet" type="text/css" href="css/app.css">
-
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
 </head>
 <body>
-	<div class="easyui-panel" id="view_position">
+	<div class="easyui-panel" id="view_position_2">
 		<div id="commodity_modify">
-		<div>
+		<div style="margin-bottom:10px">
 			<span>商品名称：</span>
 				<input class="easyui-combobox" data-options="
-				url:'combobox.php',
+				url:'model/combobox.php',
 				method:'get',
-				valueField:'id',
+				valueField:'cid',
 				textField:'text',
 				" style="width:200px">
 		</div>
-		datagrid
-		</div>
-	</div>
 
-	<script type="text/javascript" src="js/jquery.min.js"></script>
-	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+		<table id="data_grid" title="所有商品" class="easyui-datagrid" style="width:900px;height:350px"
+		data-options="
+		url:'model/get_commodity.php',
+		method:'post',
+		toolbar:'#toolbar',
+		fitColumns:true,
+		rownumbers:true	,
+		singleSelect:true,
+		striped:true,
+		pagination:true,
+		">
+		<thead>
+			<tr>
+			<!-- cname,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value  -->
+				<th field="cname" width="80">名称</th>
+				<th field="tname"  width="50">类别</th>
+				<th field="cnum" width="60">库存</th>
+				<th field="ccost"  width="60">进价</th>
+				<th field="csticker_price"  width="60">定价</th>
+				<th field="cunit_value"  width="40">规格</th>
+				<th field="small_unit"  width="40">主单位</th>
+				<th field="big_unit"  width="40">辅助单位</th>
+			</tr>
+		</thead>
+		</table>
+		<div id="toolbar">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editItem()">修改</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-no" plain="true" onclick="deleteItem()">删除</a>
+		</div>
+		</div> <!-- commodity_modify div end -->
+		<!-- 对话框 -->
+		<div>
+			
+		</div>
+		<!--  对话框结束-->
+	</div>
 	<script>
-		function modifyInfo(){
+		function editItem(){
+			alert("已点击修改按钮")
+		}
+		function deleteItem(){
 			alert("已点击修改按钮")
 		}
 	</script>

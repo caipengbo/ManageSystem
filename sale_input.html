@@ -9,50 +9,94 @@
 </head>
 <body>
 	<div class="easyui-panel" id="view_position">
-			<form>
+			<form id="sale_input" method="post" action="controller/sale_input.php">
 			<div style="margin-bottom:20px">
 				<span>商品名称：</span>
-				<input class="easyui-combobox" data-options="
-				url:'combobox.php',
+				<input id="commodity_name" class="easyui-combobox" name="cid" data-options="
+				url:'model/combobox.php',
 				method:'get',
-				valueField:'id',
+				valueField:'cid',
 				textField:'text',
+				onSelect: function(rec){
+					loadInfo(rec.text);
+				}
 				" style="width:200px">
 			</div>
 			<div style="margin-bottom:20px">
 				<div class="easyui-panel" title="商品名字" style="width:260px;height:163px;padding:10px">
-					<div class="commodity_info">类别：<span>白酒</span></div>
-					<div class="commodity_info">库存：<span>500</span></div>
-					<div class="commodity_info">定价：<span>5.0</span></div>
+					<div class="commodity_info">类别：<span id="show_type"></span></div>
+					<div class="commodity_info">库存：<span id="show_num"></span></div>
+					<div class="commodity_info">定价：<span id="show_price"></span></div>
 				</div>
 			</div>
 			<div style="margin-bottom:20px">
 				<span>销售数目：</span>
-				<input class="easyui-numberspinner" style="width:60px;" data-options="">
-				<span style="color:red">*小单位</span>
+				<input id="sale_num" class="easyui-numberspinner" name="rednum" style="width:60px;" data-options="">
+				<span style="color:red" id="show_unit"></span>
 			</div>
 			<div style="margin-bottom:20px">
 			<span>售价：</span>
-			<input class="easyui-numberbox" data-options="prompt:''" style="width:60px">
+			<input id="sale_price" class="easyui-numberbox" name="sprice" data-options="precision:2,groupSeparator:','" style="width:60px">
 			</div>
+			</form>
 			<div style="margin-bottom:20px">
 					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px">出售</a>
 					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()" style="width:80px;margin-left:20px">清空</a>
 			</div>
-			</form>
+			
 	</div>
-	
-
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
 	<script>
+		var allnum;
+		function loadInfo(name) {
+			$.ajax({
+				type:"POST",
+				url:"model/load_commodity_info.php", 
+				data: {'cname':name},
+				success:function(res){
+					var obj = eval('(' + res + ')');
+					$('#show_type').html(obj[0].tname);
+					$('#show_num').html(obj[0].cnum + " " +obj[0].small_unit);
+					$('#show_price').html(obj[0].csticker_price);
+					$('#show_unit').html(obj[0].small_unit);
+					$('#sale_price').numberbox('setValue',obj[0].csticker_price);
+					allnum = obj[0].cnum;
+				}
+			});
+		}
+		function clearPanel(){
+			$('#show_type').html("");
+			$('#show_num').html("");
+			$('#show_price').html("");
+			$('#show_unit').html("");
+			$('#commodity_name').combobox('clear');
+		}
 		function submitForm(){
-			$('#commodity_input').form('submit');
-			alert("录入成功")
-			$('#commodity_input').form('clear');
+			//防止销售数目大于库存数目
+			var int_salenum = parseInt($('#sale_num').numberspinner('getValue'));
+			var int_allnum = parseInt(allnum);
+			if (int_salenum > int_allnum) {
+				alert("库存不足");
+				return;
+			}
+			//各框设置必填
+			$('#sale_input').form('submit',{
+				success:function(data){
+					if (data == 1) {
+						alert("商品已销售！");
+						$('#sale_input').form('clear');
+						clearPanel();
+					} else {
+						alert("销售失败!");
+					} 
+				}
+			});
+			
 		}
 		function clearForm(){
-			$('#commodity_input').form('clear');
+			$('#sale_input').form('clear');
+			clearPanel();
 		}
 	</script>
 </body>

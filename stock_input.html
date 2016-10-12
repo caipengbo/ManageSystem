@@ -11,31 +11,31 @@
 </head>
 <body>
 	<div class="easyui-panel" id="view_position">
-			<form class="stock_input" method="post" action="">
+			<form id="stock_input" method="post" action="controller/stock_input.php">
 			<div style="margin-bottom:20px">
 				<span>商品名称：</span>
-				<input class="easyui-combobox" data-options="
-				url:'',
+				<input class="easyui-combobox" name="cid" data-options="
+				url:'model/combobox.php',
 				method:'get',
-				valueField:'id',
+				valueField:'cid',
 				textField:'text',
 				onSelect: function(rec){
-					
+					loadInfo(rec.text);
 				}
 				" style="width:200px">
 			</div>
 			<div style="margin-bottom:20px">
 				<div class="easyui-panel" title="商品标签" style="width:260px;height:200px;padding:10px">
-					<div class="commodity_info">类别：<span id="show_type">白酒</span></div>
-					<div class="commodity_info">库存：<span id="show_num">500</span></div>
-					<div class="commodity_info">进价：<span id="show_cost">2.5</span></div>
-					<div class="commodity_info">定价：<span id="show_price">5.0</span></div>
+					<div class="commodity_info">类别：<span id="show_type"></span></div>
+					<div class="commodity_info">库存：<span id="show_num"></span></div>
+					<div class="commodity_info">进价：<span id="show_cost"></span></div>
+					<div class="commodity_info">定价：<span id="show_price"></span></div>
 				</div>
 			</div>
 			<div style="margin-bottom:20px">
 				<span>进货数目：</span>
-				<input class="easyui-numberbox" data-options="prompt:''" style="width:60px">
-				<span  id="show_unit" style="margin-left:10px">JS控制小单位</span>
+				<input id="stocknum" class="easyui-numberbox" name="addnum" data-options="" style="width:60px">
+				<span  id="show_bigunit" style="margin-left:10px"></span>
 			</div>
 			</form>
 			<div style="margin-bottom:20px">
@@ -43,6 +43,56 @@
 			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()" style="width:80px;margin-left:20px">清空</a>
 			</div>
 	</div>
+	<script>
+		var cunit_value; // 全局变量，用来在不同function间传递值
+		function loadInfo(name) {
+			$.ajax({
+				type:"POST",
+				url:"model/load_commodity_info.php",
+				data: {'cname':name},
+				success:function(res){
+					var obj = eval('(' + res + ')');
+					$('#show_type').html(obj[0].tname);
+					$('#show_num').html(obj[0].cnum + " " +obj[0].small_unit);
+					$('#show_cost').html(obj[0].ccost);
+					$('#show_price').html(obj[0].csticker_price);
+					$('#show_bigunit').html(obj[0].big_unit);
+					cunit_value = obj[0].cunit_value;
+				}
+			});
+		}
+		function clearPanel(){
+			$('#show_type').html("");
+			$('#show_num').html("");
+			$('#show_cost').html("");
+			$('#show_price').html("");
+			$('#show_bigunit').html("");
+		}
+		function submitForm(){
+			//大单位数目到小单位数目的转换
+			var str_addnum = $('#stocknum').val();
+			var float_addnum = parseFloat(str_addnum);
+			float_addnum = float_addnum * cunit_value;
+			$('#stocknum').numberbox('setValue',float_addnum);
+			// 完善时候，添加检测各输入框是否为空
+			$('#stock_input').form('submit',{
+				success:function(data){
+					if (data == 1) {
+						alert("商品已入库！");
+						$('#stock_input').form('clear');
+						clearPanel();
+					} else {
+						alert("入库失败!");
+					} 
+				}
+			});
+			
+		}
+		function clearForm(){
+			$('#stock_input').form('clear');
+			clearPanel();
+		}
 
+	</script>
 </body>
 </html>
