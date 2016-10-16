@@ -76,21 +76,6 @@ class UseMysql {
     } else {
       return true;
     }
-           // do {
-           //     //store first result set 
-           //     if ($result = mysqli_store_result($this->connect)) {
-           //        while ($row = mysqli_fetch_row($result)) {
-           //          printf("%s\n", $row[0]);
-           //        }
-           //        mysqli_free_result($result);
-           //     }
-           //    /* print divider */
-           //      if (mysqli_more_results($this->connect)) {
-           //        printf("-----------------\n");
-           //      }
-           // } while(mysqli_next_result($this->connect));
-  }
-   //关闭连接
   }
   public function close() {
       mysqli_close($this->connect); //链接关闭

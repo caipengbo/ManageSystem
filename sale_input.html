@@ -6,6 +6,9 @@
 	<link rel="stylesheet" type="text/css" href="css/easyui.css">
 	<link rel="stylesheet" type="text/css" href="css/icon.css">
 	<link rel="stylesheet" type="text/css" href="css/app.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
 </head>
 <body>
 	<div class="easyui-panel" id="view_position_2">
@@ -52,7 +55,7 @@
 				<div style="margin-bottom:10px">
 					<span>商品名称：</span>
 					<input id="commodity_combobox" name="cid" required=true style="width:200px">
-					<input id="commodity_name" type="hide" name="cname">
+					<input id="commodity_name" type="hidden" name="cname">
 				</div>
 				<div style="margin-bottom:10px">
 					<span>类　　别：</span>
@@ -90,21 +93,21 @@
 			" buttons="#saledlg-buttons">
 			<div>
 				<div style="margin-bottom:10px">
-					<span>件数：</span>
-					<span id="show_itemnum"></span>
+					<span style="font-size:25px;margin-left:70px">件数：</span>
+					<span style="font-size:35px;color:red" id="show_itemnum"></span>
 				</div>
 				<div style="margin-bottom:10px">
-					<span>应收：</span>
-					<span id="show_reqmoney"></span>
+					<span style="font-size:25px;margin-left:70px">应收：</span>
+					<span style="font-size:35px;color:red" id="show_reqmoney"></span>
 				</div>
 				<div style="margin-bottom:10px">
-					<span>实收：</span>
-					<input id="get_money" required=true style="width:150px">
-					<span id="show_getmoney"></span>
+					<span style="font-size:25px;margin-left:70px">实收：</span>
+					<input id="get_money" required=true style="width:100px">
+					<span style="font-size:35px;color:red"  id="show_getmoney"></span>
 				</div>
 				<div style="margin-bottom:10px">
-					<span>找零：</span>
-					<span id="show_givemoney"></span>
+					<span style="font-size:25px;margin-left:70px">找零：</span>
+					<span style="font-size:35px;color:red"  id="show_givemoney"></span>
 				</div>
 			</div>
 			<div id="saledlg-buttons">
@@ -113,15 +116,16 @@
 			</div>
 		</div> <!--  对话框2结束-->	
 	</div>
-	<script type="text/javascript" src="js/jquery.min.js"></script>
-	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
 	<script>
-		var countmoney=0;
+		var countmoney = 0;
+		var datagrid_data;
 		function popAddDlg(){	
 			$('#adddlg').dialog('open').dialog('setTitle','添加商品条目');
 		}
 		function popSaleDlg(){
-			$('#show_itemnum ').html("000");
+			datagrid_data = $('#data_grid').datagrid('getData');
+			var rownum = datagrid_data.total;
+			$('#show_itemnum ').html(rownum);
 			$('#show_reqmoney').html(countmoney);
 			$('#get_money').numberbox({
 				precision:1,
@@ -182,8 +186,8 @@
 			$('#show_countmoney').html(countmoney);
 		}
 		function submitSalelist() {
-			var datagrid_data = $('#data_grid').datagrid('getData');
-			jsondata = JSON.parse(JSON.stringify(finalldata));
+			
+			//jsondata = JSON.parse(JSON.stringify(finalldata));
 			$.ajax({
 				type: "post",
 				url: "controller/sale_input.php",
