@@ -54,22 +54,22 @@
 		 	$result = json_decode($res,true);
 		 	return $result;
 		 }
-		 //查询商品名称
-		 public function queryCommodityName() {
+		 //查询商品信息
+		 public function queryCommodityInfo() {
 		 	$db = new UseMysql();
-		 	$sql = "select cid,cname as text from tb_commodity";
+		 	$sql = "select cid,cname as text,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid";
 		 	$res = $db->execute_dql($sql);
 		 	$db->close();
 		 	return $res;
 		 }
-		 //查询商品基本信息
-		 public function queryCommodityInfo($cname) {
-		 	$db = new UseMysql();
-		 	$sql = "select tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid and cname='"."$cname'";
-		 	$res = $db->execute_dql($sql);
-		 	$db->close();
-		 	return $res;
-		 }
+		 // //查询商品基本信息
+		 // public function queryCommodityInfo($cname) {
+		 // 	$db = new UseMysql();
+		 // 	$sql = "select tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid and cname='"."$cname'";
+		 // 	$res = $db->execute_dql($sql);
+		 // 	$db->close();
+		 // 	return $res;
+		 // }
 		 public function queryAllCommodityInfo() {
 		 	$db = new UseMysql();
 		 	$sql = "select cname,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid";
@@ -77,6 +77,7 @@
 		 	$db->close();
 		 	return $res;
 		 }
+		 
 		 // 效率较低，暂停使用
 		 //分页查看商品信息 
 		 // public function queryPageCommodityInfo($beginnum,$endnum) {
@@ -86,18 +87,33 @@
 		 // 	$db->close();
 		 // 	return $res;
 		 // }
-		 // 销售商品
-		 public function insetSaleInfo($cid,$sale_price,$snum,$username) {
+		 //更新商品信息
+		 public function updateCommodityInfo($oldcname,$newcname,$cunit_value,$ccost,$csticker_price) {
 		 	$db = new UseMysql();
-		 	//注意此处sql语句串与php中串的转换
-		 	$sql = "insert into tb_sale(cid,sale_price,snum,username,stime) values($cid,$sale_price,$snum,'"."123',now());";
+		 	$sql = "update tb_commodity set cname='$newcname',cunit_value=$cunit_value,ccost=$ccost,csticker_price=$csticker_price where cname='"."$oldcname'";
+		 	$res = $db->execute_dml($sql);
+		 	$db->close();
+		 	return $res;//bool
+		 } 
+		 // 删除商品信息
+		 public function deleteCommodityInfo($cname) {
+		 	$db = new UseMysql();
+		 	$sql = "delete from tb_commodity where cname='"."$cname'";
+		 	$res = $db->execute_dml($sql);
+		 	$db->close();
+		 	return $res;//bool
+		 }
+		 // 销售商品
+			 //操作在sale_input.php中	
+		 // 商品损耗
+		 public function insertDestroyInfo($cid,$dnum,$statement) {
+		 	$db = new UseMysql();
+		 	$sql = "insert into tb_destroy(cid,dnum,statement) values($cid,$dnum,'$statement')";
 		 	// printf("%s",$sql);
 		 	$res = $db->execute_dml($sql);
 		 	$db->close();
 		 	return $res;
 		 }
-		 
-		 // 商品损耗
 	}
 
 ?>

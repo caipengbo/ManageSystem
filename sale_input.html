@@ -8,95 +8,222 @@
 	<link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
 <body>
-	<div class="easyui-panel" id="view_position">
-			<form id="sale_input" method="post" action="controller/sale_input.php">
-			<div style="margin-bottom:20px">
-				<span>商品名称：</span>
-				<input id="commodity_name" class="easyui-combobox" name="cid" data-options="
-				url:'model/combobox.php',
-				method:'get',
-				valueField:'cid',
-				textField:'text',
-				onSelect: function(rec){
-					loadInfo(rec.text);
-				}
-				" style="width:200px">
+	<div class="easyui-panel" id="view_position_2">
+		<!-- 销售单 -->
+		<div>
+			<table id="data_grid" title="商品销售单" class="easyui-datagrid" style="width:900px;height:380px"
+			data-options="
+			toolbar:'#toolbar',
+			footer:'#footer',
+			fitColumns:true,
+			rownumbers:true,
+			singleSelect:true
+			">
+				<thead>
+					<tr>
+						<th field="cname" width="70">商品名称</th>
+						<th field="sale_price"  width="50">售价</th>
+						<th field="snum"  width="50">数量</th>
+						<th field="sale_money"  width="50">金额</th>
+					</tr>
+				</thead>
+			</table>
+			<div id="toolbar">
+				<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="popAddDlg()">添加</a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editRow()">修改</a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="deleteRow()">删除</a>
+				<span style="float:right">
+				<a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="popSaleDlg()">销售</a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-clear" plain="true" onclick="clearSalelist()">清空</a>
+				</span>
 			</div>
-			<div style="margin-bottom:20px">
-				<div class="easyui-panel" title="商品名字" style="width:260px;height:163px;padding:10px">
-					<div class="commodity_info">类别：<span id="show_type"></span></div>
-					<div class="commodity_info">库存：<span id="show_num"></span></div>
-					<div class="commodity_info">定价：<span id="show_price"></span></div>
+			<div id="footer">
+				<spans style="float:right;font-size:30px">共计：<span id="show_countmoney"></span>元</span>
+			</div>
+		</div><!-- 销售单结束 -->
+		<!-- 对话框1 -->
+		<div id="adddlg" class="easyui-dialog" style="width:400px;height:298px;padding:10px 20px"
+			closed="true" data-options="
+			onClose:function(){
+				$('#item_input').form('clear');
+			}
+			" buttons="#adddlg-buttons">
+			<form id="item_input" method="post" action="">
+				<div style="margin-bottom:10px">
+					<span>商品名称：</span>
+					<input id="commodity_combobox" name="cid" required=true style="width:200px">
+					<input id="commodity_name" type="hide" name="cname">
+				</div>
+				<div style="margin-bottom:10px">
+					<span>类　　别：</span>
+					<span><input id="show_type" class="easyui-textbox" data-options="disabled:true" style="width:150px"></span>
+				</div>
+				<div style="margin-bottom:10px">
+					<span>库　　存：</span>
+					<span><input id="show_num" class="easyui-numberbox" data-options="precision:0,width:'150px',disabled:true"></span>
+				</div>
+				<div style="margin-bottom:10px">
+					<span>定　　价：</span>
+					<span><input id="show_sticker_price" class="easyui-numberbox" data-options="precision:1,groupSeparator:',',width:'150px',disabled:true"></span>
+				</div>
+				<div style="margin-bottom:10px">
+					<span>销售数目：</span>
+					<input id="sale_num" class="easyui-numberspinner" name="rednum" style="width:150px;" data-options="" required=true>
+					<span style="color:red" id="show_unit"></span>
+				</div>
+				<div style="margin-bottom:10px">
+					<span>售　　价：</span>
+					<input id="sale_price" class="easyui-numberbox" name="sprice" data-options="precision:2,groupSeparator:','" required=true style="width:150px">
+				</div>
+			</form>
+			<div id="adddlg-buttons">
+				<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="addRow()">添加</a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#adddlg').dialog('close')">取消</a>
+			</div>
+		</div> <!--  对话框1结束-->	
+		<!-- 对话框2 -->
+		<div id="saledlg" class="easyui-dialog" style="width:400px;height:298px;padding:10px 20px"
+			closed="true" data-options="
+			onClose:function(){
+				
+			}
+			" buttons="#saledlg-buttons">
+			<div>
+				<div style="margin-bottom:10px">
+					<span>件数：</span>
+					<span id="show_itemnum"></span>
+				</div>
+				<div style="margin-bottom:10px">
+					<span>应收：</span>
+					<span id="show_reqmoney"></span>
+				</div>
+				<div style="margin-bottom:10px">
+					<span>实收：</span>
+					<input id="get_money" required=true style="width:150px">
+					<span id="show_getmoney"></span>
+				</div>
+				<div style="margin-bottom:10px">
+					<span>找零：</span>
+					<span id="show_givemoney"></span>
 				</div>
 			</div>
-			<div style="margin-bottom:20px">
-				<span>销售数目：</span>
-				<input id="sale_num" class="easyui-numberspinner" name="rednum" style="width:60px;" data-options="">
-				<span style="color:red" id="show_unit"></span>
+			<div id="saledlg-buttons">
+				<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="submitSalelist()">确定</a>
+				<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#saledlg').dialog('close')">取消</a>
 			</div>
-			<div style="margin-bottom:20px">
-			<span>售价：</span>
-			<input id="sale_price" class="easyui-numberbox" name="sprice" data-options="precision:2,groupSeparator:','" style="width:60px">
-			</div>
-			</form>
-			<div style="margin-bottom:20px">
-					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px">出售</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()" style="width:80px;margin-left:20px">清空</a>
-			</div>
-			
+		</div> <!--  对话框2结束-->	
 	</div>
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
 	<script>
-		var allnum;
-		function loadInfo(name) {
-			$.ajax({
-				type:"POST",
-				url:"model/load_commodity_info.php", 
-				data: {'cname':name},
-				success:function(res){
-					var obj = eval('(' + res + ')');
-					$('#show_type').html(obj[0].tname);
-					$('#show_num').html(obj[0].cnum + " " +obj[0].small_unit);
-					$('#show_price').html(obj[0].csticker_price);
-					$('#show_unit').html(obj[0].small_unit);
-					$('#sale_price').numberbox('setValue',obj[0].csticker_price);
-					allnum = obj[0].cnum;
+		var countmoney=0;
+		function popAddDlg(){	
+			$('#adddlg').dialog('open').dialog('setTitle','添加商品条目');
+		}
+		function popSaleDlg(){
+			$('#show_itemnum ').html("000");
+			$('#show_reqmoney').html(countmoney);
+			$('#get_money').numberbox({
+				precision:1,
+				groupSeparator:',',
+				onChange:function(newValue,oldValue) {
+				var givemoney = parseFloat(newValue) - parseFloat($('#show_reqmoney').text()); 
+				$('#show_givemoney').html(givemoney);
 				}
 			});
+			$('#saledlg').dialog('open').dialog('setTitle','销售小票');
 		}
-		function clearPanel(){
-			$('#show_type').html("");
-			$('#show_num').html("");
-			$('#show_price').html("");
-			$('#show_unit').html("");
-			$('#commodity_name').combobox('clear');
+		$('#commodity_combobox').combobox({
+			url:'model/combobox.php',
+			method:'get',
+			valueField:'cid',
+			textField:'text',
+			multiple:false,
+			onSelect: function(record){
+				$('#commodity_name').val(record.text);
+				$('#show_type').textbox('setValue',record.tname);
+				$('#show_num').numberbox('setValue',record.cnum);
+				$('#show_sticker_price').numberbox('setValue',record.csticker_price);
+				$('#sale_num').numberspinner('setValue',1);
+				$('#sale_price').numberbox('setValue',record.csticker_price);
+			}
+		});
+		function addRow() {
+			var cnum = parseInt($('#show_num').numberbox('getValue'));
+			var salenum = parseInt($('#sale_num').numberspinner('getValue'));
+			if (salenum <=0 ) {
+				alert("销售数目必须大于0");
+				return;
+			}
+			if (salenum > cnum) {
+				alert("库存不足！");
+				return ;
+			}
+			var  name= $('#commodity_name').val();
+			var sprice = $('#sale_price').numberbox('getValue');
+			var smoney = parseFloat(sprice) * salenum;
+			countmoney += smoney;
+			$('#data_grid').datagrid('appendRow',
+				{
+					cname:name,
+					snum:salenum,
+					sale_price:sprice,
+					sale_money:smoney
+				});
+			$('#show_countmoney').html(countmoney);
+			$('commodity_combobox').combobox('clear');
+			$('#adddlg').dialog('close');
 		}
-		function submitForm(){
+		function deleteRow() {
+			var row = $('#data_grid').datagrid('getSelected');
+			var row_index = $('#data_grid').datagrid('getRowIndex',row);
+			$('#data_grid').datagrid('deleteRow',row_index);
+			countmoney -=row.sale_money;
+			$('#show_countmoney').html(countmoney);
+		}
+		function submitSalelist() {
+			var datagrid_data = $('#data_grid').datagrid('getData');
+			jsondata = JSON.parse(JSON.stringify(finalldata));
+			$.ajax({
+				type: "post",
+				url: "controller/sale_input.php",
+				data: {
+					"item":JSON.stringify(datagrid_data.rows),
+					"itemnum":datagrid_data.rows.length,
+					"salemoney":countmoney,
+					"getmoney":$('#get_money').numberbox('getValue')
+				},
+				success: function(){
+					
+				},
+				dataType: "json"
+			});
+		}
+
+		function submitForm() {
 			//防止销售数目大于库存数目
 			var int_salenum = parseInt($('#sale_num').numberspinner('getValue'));
 			var int_allnum = parseInt(allnum);
+			if (int_salenum <=0 ) {
+				alert("销售数目必须大于0");
+				return;
+			}
 			if (int_salenum > int_allnum) {
 				alert("库存不足");
 				return;
 			}
 			//各框设置必填
-			$('#sale_input').form('submit',{
+			$('#item_input').form('submit',{
 				success:function(data){
 					if (data == 1) {
 						alert("商品已销售！");
-						$('#sale_input').form('clear');
+						$('#item_input').form('clear');
 						clearPanel();
 					} else {
 						alert("销售失败!");
 					} 
 				}
 			});
-			
-		}
-		function clearForm(){
-			$('#sale_input').form('clear');
-			clearPanel();
 		}
 	</script>
 </body>

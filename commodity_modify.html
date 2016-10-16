@@ -13,26 +13,20 @@
 <body>
 	<div class="easyui-panel" id="view_position_2">
 		<div id="commodity_modify">
-		<div style="margin-bottom:10px">
+		<div style="margin-bottom:10px;margin-left:200px">
 			<span>商品名称：</span>
-				<input class="easyui-combobox" data-options="
-				url:'model/combobox.php',
-				method:'get',
-				valueField:'cid',
-				textField:'text',
-				" style="width:200px">
+			<span><input class="easyui-searchbox" data-options="prompt:'请输入商品名称...',searcher:doSearch" style="width:250px"></span>	
 		</div>
-
-		<table id="data_grid" title="所有商品" class="easyui-datagrid" style="width:900px;height:350px"
+		<table id="data_grid" title="所有商品" class="easyui-datagrid" style="width:900px;height:380px"
 		data-options="
-		url:'model/get_commodity.php',
+		url:'model/get_commodity_datagrid.php',
 		method:'post',
 		toolbar:'#toolbar',
 		fitColumns:true,
 		rownumbers:true	,
 		singleSelect:true,
 		striped:true,
-		pagination:true,
+		pagination:true
 		">
 		<thead>
 			<tr>
@@ -49,22 +43,95 @@
 		</thead>
 		</table>
 		<div id="toolbar">
-			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editItem()">修改</a>
-			<a href="#" class="easyui-linkbutton" iconCls="icon-no" plain="true" onclick="deleteItem()">删除</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="popDlg()">修改商品</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-no" plain="true" onclick="deleteCommodity()">删除商品</a>
 		</div>
 		</div> <!-- commodity_modify div end -->
 		<!-- 对话框 -->
-		<div>
-			
+		<div id="dlg" class="easyui-dialog" style="width:400px;height:298px;padding:10px 20px"
+		closed="true" buttons="#dlg-buttons">
+		<form id="update_commodity" method="post" action="">
+			<div class="dlg_body">
+				<div>		
+					<span><font>名称：</font></span>
+					<span><input class="easyui-textbox" name="cname" data-options="" style="width:150px"></span>
+				</div>
+				<div>		
+					<span>类别：</span>
+					<span><input class="easyui-textbox" name="tname" data-options="disabled:true" style="width:150px"></span>
+				</div>
+				<div>
+					<span>规格：</span>
+					<span><input class="easyui-numberbox" name="cunit_value" data-options="precision:0,width:'150px'"></span>
+				</div>
+				<div>
+					<span>进价：</span>
+					<span><input class="easyui-numberbox" name="ccost" data-options="precision:2,groupSeparator:',',width:'150px'"></span>
+				</div>
+				<div>
+					<span>定价：</span>
+					<span><input class="easyui-numberbox" name="csticker_price" data-options="precision:1,groupSeparator:',',width:'150px'"></span>
+				</div>
+				<div>
+					<span>库存：</span>
+					<span><input class="easyui-numberbox" name="cnum" data-options="precision:0,width:'150px',disabled:true"></span>
+				</div>
+			</div>
+		</form>
+		</div> <!--  对话框结束-->
+		<div id="dlg-buttons">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="updateCommodity()">修改</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
 		</div>
-		<!--  对话框结束-->
 	</div>
 	<script>
-		function editItem(){
-			alert("已点击修改按钮")
+		var url;
+		function popDlg(){	
+			var row = $('#data_grid').datagrid('getSelected');
+			if (row){
+				$('#dlg').dialog('open').dialog('setTitle','修改商品信息');
+				$('#update_commodity').form('load',row);
+				url = 'controller/update_commodity.php?oldcname='+row.cname;
+			}
 		}
-		function deleteItem(){
-			alert("已点击修改按钮")
+		function updateCommodity(){
+			$('#update_commodity').form('submit',{
+				url: url,
+				onSubmit: function(){
+					return $(this).form('validate');
+				},
+				success: function(result){
+					if (result == 1){
+						$('#dlg').dialog('close');
+						$('#data_grid').datagrid('reload');	
+						alert("修改成功");
+					} else {
+						alert("修改失败");
+					}
+				}
+			});
+		}
+		function deleteCommodity(){
+			var row = $('#data_grid').datagrid('getSelected');
+			if (row){
+				$.messager.confirm('确认','确定删除该商品信息吗?',function(r){
+					if (r){
+						$.post('controller/delete_commodity.php',{cname:row.cname},function(result){
+							if (result == 1){
+								$('#data_grid').datagrid('reload');	// reload the user data
+								alert("商品已删除");
+							} else {
+								alert("修改失败");
+							}
+						},'json');
+					}
+				});
+			}
+		}
+		function doSearch(value){
+			$('#data_grid').datagrid('load',{
+				cname: value
+			});
 		}
 	</script>
 </body>

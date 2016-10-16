@@ -25,14 +25,18 @@
 	insert into tb_commodity(cname,ccost,csticker_price,cnum,cunit_value,tid) values("qingdao",5,8,10,10,4);
 	update tb_commodity set cnum=cnum+;
 	-- 损耗表
-	create table tb_destroy();
+	create table tb_destroy(did int primary key auto_increment,cid int,dnum int,statement text,foreign key(cid) references tb_commodity(cid));
+
 	-- 销售表 
-	create table tb_sale(sid int primary key auto_increment,cid int,sale_price float(8,2),snum int,username varchar(15),stime datetime,
-	foreign key(cid) references tb_commodity(cid),foreign key(username) references tb_user(username))
 	
 	insert into tb_sale(cid,sale_price,snum,username,stime) values(17,13,1,"123",now());
 	insert into tb_sale(cid,sale_price,snum,username,stime) values(19,3,2,"123",now());
 	-- 查询
 	--查询商品信息
 	select cname as text,tname,small_unit,cnum,ccost,csticker_price from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid;
+
+	-- 销售表——新
+	create table tb_sale(sid varchar(20) primary key,sale_money float(10,2),get_money float(10,2),itemnum int,username varchar(15),
+		stime datetime,foreign key(username) references tb_user(username));
+	create table tb_saledetails(cid int,snum int,sale_price float(8,2),foreign key(cid) references tb_commodity(cid));
 	

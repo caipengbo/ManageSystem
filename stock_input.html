@@ -8,21 +8,14 @@
 	<link rel="stylesheet" type="text/css" href="css/app.css">
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
 </head>
 <body>
 	<div class="easyui-panel" id="view_position">
 			<form id="stock_input" method="post" action="controller/stock_input.php">
 			<div style="margin-bottom:20px">
 				<span>商品名称：</span>
-				<input class="easyui-combobox" name="cid" data-options="
-				url:'model/combobox.php',
-				method:'get',
-				valueField:'cid',
-				textField:'text',
-				onSelect: function(rec){
-					loadInfo(rec.text);
-				}
-				" style="width:200px">
+				<input id="commodity_combobox" name="cid" required=true style="width:200px">
 			</div>
 			<div style="margin-bottom:20px">
 				<div class="easyui-panel" title="商品标签" style="width:260px;height:200px;padding:10px">
@@ -34,7 +27,7 @@
 			</div>
 			<div style="margin-bottom:20px">
 				<span>进货数目：</span>
-				<input id="stocknum" class="easyui-numberbox" name="addnum" data-options="" style="width:60px">
+				<input id="stocknum" class="easyui-numberbox" name="addnum" required=true style="width:60px">
 				<span  id="show_bigunit" style="margin-left:10px"></span>
 			</div>
 			</form>
@@ -45,22 +38,20 @@
 	</div>
 	<script>
 		var cunit_value; // 全局变量，用来在不同function间传递值
-		function loadInfo(name) {
-			$.ajax({
-				type:"POST",
-				url:"model/load_commodity_info.php",
-				data: {'cname':name},
-				success:function(res){
-					var obj = eval('(' + res + ')');
-					$('#show_type').html(obj[0].tname);
-					$('#show_num').html(obj[0].cnum + " " +obj[0].small_unit);
-					$('#show_cost').html(obj[0].ccost);
-					$('#show_price').html(obj[0].csticker_price);
-					$('#show_bigunit').html(obj[0].big_unit);
-					cunit_value = obj[0].cunit_value;
+		$('#commodity_combobox').combobox({
+				url:'model/combobox.php',
+				method:'get',
+				valueField:'cid',
+				textField:'text',
+				onSelect: function(record){
+					$('#show_type').html(record.tname);
+					$('#show_num').html(record.cnum + " " +record.small_unit);
+					$('#show_cost').html(record.ccost);
+					$('#show_price').html(record.csticker_price);
+					$('#show_bigunit').html(record.big_unit);
+					cunit_value = record.cunit_value;
 				}
 			});
-		}
 		function clearPanel(){
 			$('#show_type').html("");
 			$('#show_num').html("");
@@ -76,6 +67,9 @@
 			$('#stocknum').numberbox('setValue',float_addnum);
 			// 完善时候，添加检测各输入框是否为空
 			$('#stock_input').form('submit',{
+				onSubmit: function(){
+					return $(this).form('validate');
+				},
 				success:function(data){
 					if (data == 1) {
 						alert("商品已入库！");

@@ -1,15 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>商品信息录入</title>
+	<title>销售清单查询</title>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="css/easyui.css">
 	<link rel="stylesheet" type="text/css" href="css/icon.css">
-	
-</head>
-<body>
-
+	<link rel="stylesheet" type="text/css" href="css/app.css">
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+	<div class="easyui-panel" id="view_position_2">
+		<div id="commodity_search">
+		<div style="margin-bottom:10px;margin-left:200px">
+			<span>商品名称：</span>
+			<span><input class="easyui-searchbox" data-options="prompt:'请输入商品名称...',searcher:doSearch" style="width:250px"></span>	
+		</div>
+
+		<table id="data_grid" title="所有商品" class="easyui-datagrid" style="width:900px;height:360px"
+		data-options="
+		url:'model/get_commodity_datagrid.php',
+		method:'post',
+		fitColumns:true,
+		rownumbers:true	,
+		singleSelect:true,
+		striped:true,
+		pagination:true,
+		sortName:'csticker_price',
+		sortOrder:'desc'
+		">
+		<thead>
+			<tr>
+			<!-- cname,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value  -->
+				<th field="cname" width="80">商品</th>
+				<th field="tname"  width="50">类别</th>
+				<th field="cnum" width="60" sortable="true">销售数目</th>
+				<th field="ccost"  width="60" sortable="true">进价</th>
+				<th field="csticker_price"  width="60" sortable="true">定价</th>
+				<th field="cunit_value"  width="40">规格</th>
+				<th field="small_unit"  width="40">主单位</th>
+				<th field="big_unit"  width="40">辅助单位</th>
+			</tr>
+		</thead>
+		</table>
+		</div> <!-- commodity_search div end -->
+		
+	</div>
+	<script>
+		function doSearch(value,name){
+			$('#data_grid').datagrid('load',{
+				cname: value,
+				tname: name
+			});
+		}
+	</script>
 </body>
 </html>

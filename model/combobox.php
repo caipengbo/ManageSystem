@@ -1,6 +1,6 @@
 <?php
 	require "CommodityService.class.php";
 	$CS = new CommodityService();
-	$res = $CS->queryCommodityName();
+	$res = $CS->queryCommodityInfo();
 	echo $res;
 ?>

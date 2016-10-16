@@ -15,7 +15,7 @@
 		<form id="commodity_input" method="post" action="controller/commodity_input.php">
 		<div>
 			<span>商品名称：</span>
-			<input id="cname" class="easyui-textbox" name="cname" data-options="
+			<input id="cname" class="easyui-textbox" name="cname" required=true data-options="
 			events:{blur:checkCommodityName}
 			" style="width:20%">
 			<span id="commodity_name_check" style="margin-left:10px;color:red"></span>
@@ -29,17 +29,17 @@
 		</div>
 		<div>
 			<span>规格：</span>
-			<input class="easyui-numberbox" name="cunit_value" data-options="prompt:''" style="width:60px">
+			<input class="easyui-numberbox" name="cunit_value" required=true style="width:60px">
 			<span id="show_unit" style="margin-left:5px;color:red"></span>
 		</div>
 		<div>
-			<span>进价：<input class="easyui-numberbox" name="ccost" data-options="precision:2,groupSeparator:',',width:'60px'"> <span style="margin-left:10px;color:red">(单价)</span></span>
+			<span>进价：<input class="easyui-numberbox" name="ccost" required=true data-options="precision:2,groupSeparator:',',width:'60px'"> <span style="margin-left:10px;color:red">(单价)</span></span>
 		</div>
 		<div>
-			<span>定价：<input class="easyui-numberbox" name="csticker_price" data-options="precision:1,groupSeparator:',',width:'60px'"></span>
+			<span>定价：<input class="easyui-numberbox" name="csticker_price" required=true data-options="precision:1,groupSeparator:',',width:'60px'"></span>
 		</div>
 		<div>
-			<span>初始库存：<input class="easyui-numberbox" name="cnum" data-options="precision:0,groupSeparator:',',width:'60px'"></span>
+			<span>初始库存：<input class="easyui-numberbox" name="cnum" required=true data-options="precision:0,groupSeparator:',',width:'60px'"></span>
 			<span id="show_unit2" style="margin-left:5px;color:red"></span>
 		</div>
 		</form>
@@ -100,10 +100,11 @@
 			$('#commodity_input').form('submit',{
 				success:function(data){
 					if (data == 1) {
-						alert("添加成功！");
+						alert("添加成功");
+						// swal('添加成功!','','success')
 						$('#commodity_input').form('clear');
 					} else {
-						alert("添加失败!");
+						alert("添加失败");
 					}
 				}
 			});
