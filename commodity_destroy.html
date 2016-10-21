@@ -65,7 +65,7 @@
 			</div>
 			<div style="margin-bottom:20px">
 				<span>损耗数目：</span>
-				<input class="easyui-numberbox" name="dnum" required="true" style="width:60px">
+				<input  id="destroy_num" class="easyui-numberbox" name="dnum" required="true" style="width:60px">
 				<span id="show_smallunit" style="margin-left:10px"></span>
 			</div>
 			<div>
@@ -103,7 +103,9 @@
 		</div> <!-- update dialog end -->
 	</div>
 	<script>
-		$('#commodity_combobox').combobox({
+		var currentnum;
+ 		function popAddDlg(){	
+			$('#commodity_combobox').combobox({
 				url:'model/combobox.php',
 				method:'get',
 				valueField:'cid',
@@ -114,12 +116,18 @@
 					$('#show_cost').html(record.ccost);
 					$('#show_price').html(record.csticker_price);
 					$('#show_smallunit').html(record.small_unit);
+					currentnum = parseInt(record.cnum);
 				}
 			});
-		function popAddDlg(){	
 			$('#adddlg').dialog('open').dialog('setTitle','添加损耗信息');
 		}
 		function addDestroyItem(){
+			var num = $('#destroy_num').numberbox('getValue');
+			var destroynum = parseInt(num);
+			if ( currentnum < destroynum || currentnum <= 0 ) {
+				alert("库存不足！");
+				return;
+			}
 			$('#commodity_destroy').form('submit',{
 				onSubmit: function(){
 				 	return $(this).form('validate'); //完善
@@ -167,7 +175,7 @@
 			if (row){
 				$.messager.confirm('确认','确定删除该商品信息吗?',function(r){
 					if (r){
-						$.post('controller/delete_commodity_destroy.php',{did:row.did},function(result){
+						$.post('controller/delete_commodity_destroy.php',{did:row.did,cname:row.cname,dnum:row.dnum},function(result){
 							if (result == 1){
 								$('#data_grid').datagrid('reload');	// reload the user data
 								alert("商品已删除");
