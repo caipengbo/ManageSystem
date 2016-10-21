@@ -6,9 +6,11 @@
 	<link rel="stylesheet" type="text/css" href="css/easyui.css">
 	<link rel="stylesheet" type="text/css" href="css/icon.css">
 	<link rel="stylesheet" type="text/css" href="css/app.css">
+	<link rel="stylesheet" type="text/css" href="css/sweetalert2.min.css">
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="js/sweetalert2.min.js"></script>
 </head>
 <body>
 	<div class="easyui-panel" id="view_position_2">
@@ -24,6 +26,7 @@
 			">
 				<thead>
 					<tr>
+						<th field="cid">商品号</th> <!--隐藏的列，用于传值-->
 						<th field="cname" width="70">商品名称</th>
 						<th field="sale_price"  width="50">售价</th>
 						<th field="snum"  width="50">数量</th>
@@ -48,6 +51,7 @@
 		<div id="adddlg" class="easyui-dialog" style="width:400px;height:298px;padding:10px 20px"
 			closed="true" data-options="
 			onClose:function(){
+				$('#commodity_combobox').combobox('clear');
 				$('#item_input').form('clear');
 			}
 			" buttons="#adddlg-buttons">
@@ -87,9 +91,7 @@
 		<!-- 对话框2 -->
 		<div id="saledlg" class="easyui-dialog" style="width:400px;height:298px;padding:10px 20px"
 			closed="true" data-options="
-			onClose:function(){
-				
-			}
+
 			" buttons="#saledlg-buttons">
 			<div>
 				<div style="margin-bottom:10px">
@@ -119,20 +121,29 @@
 	<script>
 		var countmoney = 0;
 		var datagrid_data;
+		var givemoney = 0;
 		function popAddDlg(){	
 			$('#adddlg').dialog('open').dialog('setTitle','添加商品条目');
 		}
 		function popSaleDlg(){
+			$('#saledlg').dialog({
+				onClose:function(){
+					$('#show_itemnum').html('');
+					$('#show_reqmoney').html('');
+					$('#get_money').numberbox('clear');
+					$('#show_givemoney').html('');
+				}
+			});
 			datagrid_data = $('#data_grid').datagrid('getData');
 			var rownum = datagrid_data.total;
 			$('#show_itemnum ').html(rownum);
-			$('#show_reqmoney').html(countmoney);
+			$('#show_reqmoney').html("￥" + countmoney);
 			$('#get_money').numberbox({
 				precision:1,
 				groupSeparator:',',
 				onChange:function(newValue,oldValue) {
-				var givemoney = parseFloat(newValue) - parseFloat($('#show_reqmoney').text()); 
-				$('#show_givemoney').html(givemoney);
+				givemoney = parseFloat(newValue) - parseFloat(countmoney); 
+				$('#show_givemoney').html("￥" + givemoney);
 				}
 			});
 			$('#saledlg').dialog('open').dialog('setTitle','销售小票');
@@ -144,7 +155,7 @@
 			textField:'text',
 			multiple:false,
 			onSelect: function(record){
-				$('#commodity_name').val(record.text);
+				$('#commodity_name').val(record.text);//将combobox的名字放进隐藏input
 				$('#show_type').textbox('setValue',record.tname);
 				$('#show_num').numberbox('setValue',record.cnum);
 				$('#show_sticker_price').numberbox('setValue',record.csticker_price);
@@ -153,6 +164,7 @@
 			}
 		});
 		function addRow() {
+			var id = $('#commodity_combobox').combobox('getValue');
 			var cnum = parseInt($('#show_num').numberbox('getValue'));
 			var salenum = parseInt($('#sale_num').numberspinner('getValue'));
 			if (salenum <=0 ) {
@@ -169,13 +181,13 @@
 			countmoney += smoney;
 			$('#data_grid').datagrid('appendRow',
 				{
+					cid:id,
 					cname:name,
 					snum:salenum,
 					sale_price:sprice,
 					sale_money:smoney
 				});
 			$('#show_countmoney').html(countmoney);
-			$('commodity_combobox').combobox('clear');
 			$('#adddlg').dialog('close');
 		}
 		function deleteRow() {
@@ -186,49 +198,52 @@
 			$('#show_countmoney').html(countmoney);
 		}
 		function submitSalelist() {
-			
+			var itemnum = parseInt(datagrid_data.rows.length);
+			if(itemnum <=0 ) {
+				alert("无商品销售！");
+				return;
+			}
+			if (givemoney <= 0) {
+				alert("收款不足！");
+				return;
+			}
 			//jsondata = JSON.parse(JSON.stringify(finalldata));
 			$.ajax({
 				type: "post",
 				url: "controller/sale_input.php",
 				data: {
 					"item":JSON.stringify(datagrid_data.rows),
-					"itemnum":datagrid_data.rows.length,
+					"itemnum":itemnum,
 					"salemoney":countmoney,
 					"getmoney":$('#get_money').numberbox('getValue')
 				},
-				success: function(){
-					
-				},
-				dataType: "json"
-			});
-		}
-
-		function submitForm() {
-			//防止销售数目大于库存数目
-			var int_salenum = parseInt($('#sale_num').numberspinner('getValue'));
-			var int_allnum = parseInt(allnum);
-			if (int_salenum <=0 ) {
-				alert("销售数目必须大于0");
-				return;
-			}
-			if (int_salenum > int_allnum) {
-				alert("库存不足");
-				return;
-			}
-			//各框设置必填
-			$('#item_input').form('submit',{
-				success:function(data){
+				dataType: "json",
+				success: function(data){
 					if (data == 1) {
-						alert("商品已销售！");
-						$('#item_input').form('clear');
-						clearPanel();
+						clearSalelist();
+						$('#saledlg').dialog('close');
+						swal({
+ 							title: '销售成功',
+  							type: 'success'
+  							});
 					} else {
-						alert("销售失败!");
-					} 
+						swal({
+ 							title: '销售失败',
+ 							text:'请检查库存,如不能解决\n请联系系统维护员：15947218808',
+  							type: 'error'
+  							});
+					}
 				}
 			});
 		}
+		function clearSalelist() {
+			$('#adddlg').dialog('close');
+			countmoney = 0;
+			givemoney = 0;
+			$('#show_countmoney').html(countmoney);
+			$('#data_grid').datagrid('loadData',{total:0,rows:[]});
+		}
+
 	</script>
 </body>
 </html>

@@ -1,22 +1,36 @@
 <?php
 	require "../model/UseMysql.class.php";
-	if (isset($_POST['item'])&&isset($_POST['itemnum']&&isset($_POST['salemoney']&&isset($_POST['getmoney']) {
+	if (isset($_POST['item'])&&isset($_POST['itemnum'])&&isset($_POST['salemoney'])&&isset($_POST['getmoney'])) {
+		date_default_timezone_set('PRC'); //北京时间
+		$sid = "sale";
+		$sid .= date("ymdHis"); //根据时间设置唯一的id号
+		//当前用户 $username = $_POST['username'] session传值
 		$item = json_decode($_POST['item'],true);
-		$itemnum = isset($_POST['itemnum'];
-		$salemoney = isset($_POST['salemoney'];
-		$getmoney = isset($_POST['getmoney'];
-
+		$itemnum = intval($_POST['itemnum']);
+		$salemoney = $_POST['salemoney'];
+		$getmoney = $_POST['getmoney'];
+		$sql = "insert into tb_sale values('$sid',$salemoney,$getmoney,$itemnum,'123',now());";
+		for ($i=0; $i < $itemnum-1; $i++) { 
+			$id = $item[$i]['cid'];
+			$num = $item[$i]['snum'];
+			$price = $item[$i]['sale_price'];
+			$sql .= "insert into tb_saledetails values('$sid',$id,$num,$price);";
+			$sql .= "update tb_commodity set cnum=cnum-$num where cid=$id;";
+		}
+		$id = $item[$itemnum-1]['cid'];
+		$num = $item[$itemnum-1]['snum'];
+		$price = $item[$itemnum-1]['sale_price'];
+		$sql .= "insert into tb_saledetails values('$sid',$id,$num,$price);";
+		$sql .= "update tb_commodity set cnum=cnum-$num where cid=$id;commit";
+		//echo $sql;
 		$db = new UseMysql();
-		// $query  = "SELECT CURRENT_USER();";
-		//$query .= "SELECT Name FROM City ORDER BY ID LIMIT 20, 5";
-		$sql = "update tb_commodity set cname='$newcname',cunit_value=$cunit_value,ccost=$ccost,csticker_price=$csticker_price where cname='"."$oldcname'";
-
-
 		$res = $db->execute_multi_dml($sql);
 		$db->close();
-		return $res;//bool
-
-
+		if ($res) {
+			echo 1;	
+		} else {
+			echo 0;
+		}
 	} else {
 		echo 0;
 	}

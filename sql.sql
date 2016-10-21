@@ -38,5 +38,15 @@
 	-- 销售表——新
 	create table tb_sale(sid varchar(20) primary key,sale_money float(10,2),get_money float(10,2),itemnum int,username varchar(15),
 		stime datetime,foreign key(username) references tb_user(username));
-	create table tb_saledetails(cid int,snum int,sale_price float(8,2),foreign key(cid) references tb_commodity(cid));
-	
+	create table tb_saledetails(sid varchar(20),cid int,snum int,sale_price float(8,2),foreign key(sid) references tb_sale(sid),foreign key(cid) references tb_commodity(cid));
+	insert into tb_sale values(sid,sale_money,get_money,itemnum,username,now())
+	insert into tb_saledetails(sid,cid,snum,sale_price)
+	update tb_commodity set cnum=cnum-;
+		delete from tb_saledetails;
+		delete from tb_sale;
+		select * from tb_sale;
+		select * from tb_saledetails;
+
+
+
+

@@ -69,7 +69,7 @@ class UseMysql {
         return true;
     }
   }
-  public function excute_multi_dml($sql) {
+  public function execute_multi_dml($sql) {
     if (!mysqli_multi_query($this->connect, $sql)) {
        printf("操作失败:%s\n", mysqli_error($this->connect));
         return false;

@@ -11,22 +11,51 @@
 	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
 </head>
 <body>
-	<div class="easyui-panel" id="view_position">
-			<form id="commodity_destroy" method="post" action="controller/commodity_destroy.php">
+	<div class="easyui-panel" id="view_position_2">
+	<!-- 损耗datagrid begin -->
+	<div id="commodity_modify">
+		<div style="margin-bottom:10px;margin-left:200px">
+			<span>商品名称：</span>
+			<span><input class="easyui-searchbox" data-options="prompt:'请输入商品名称...',searcher:doSearch" style="width:250px"></span>
+		</div>
+		<table id="data_grid" title="所有商品" class="easyui-datagrid" style="width:900px;height:340px"
+		data-options="
+		url:'model/get_destroy_datagrid.php',
+		method:'post',
+		toolbar:'#toolbar',
+		fitColumns:true,
+		rownumbers:true	,
+		singleSelect:true,
+		striped:true,
+		pagination:true,
+		">
+		<thead>
+			<tr>
+			<!-- cname,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value  -->
+				<th field="did" width="10">编号</th>
+				<th field="cname" width="60">名称</th>
+				<th field="ccost"  width="40">进价</th>
+				<th field="cnum" width="40">当前库存</th>
+				<th field="dnum"  width="40">损耗数目</th>
+				<th field="statement"  width="80">备注</th>
+			</tr>
+		</thead>
+		</table>
+		<div id="toolbar">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="popAddDlg()">添加</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="popUpdateDlg()">修改</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-no" plain="true" onclick="deleteCommodity()">删除</a>
+		</div>
+		</div> <!-- 损耗datagrid end -->
+		<!-- add dialog begin-->
+		<div id="adddlg" class="easyui-dialog" style="width:400px;height:298px;padding:10px 20px"
+		closed="true" buttons="#adddlg-buttons">
+		<form id="commodity_destroy" method="post" action="controller/commodity_destroy.php">
 			<div style="margin-bottom:20px">
 				<span>商品名称：</span>
-				<input class="easyui-combobox" name="cid" data-options="
-				prompt:'输入商品名称...',
-				url:'model/combobox.php',
-				method:'get',
-				valueField:'cid',
-				textField:'text',
-				onSelect: function(rec){
-					loadInfo(rec.text);
-				}
-				" style="width:200px">
+				<input id="commodity_combobox" name="cid" required=true style="width:200px">
 			</div>
-			<div style="margin-bottom:20px">
+			<div style="margin-bottom:20px;margin-left:20px">
 				<div class="easyui-panel" title="商品标签" style="width:260px;height:200px;padding:10px">
 					<div class="commodity_info">类别：<span id="show_type"></span></div>
 					<div class="commodity_info">库存：<span id="show_num"></span></div>
@@ -43,27 +72,112 @@
 				<span>备注：</span>
 				<input class="easyui-textbox" name="statement" data-options="prompt:'输入备注信息...'" multiline="true" value="" style="width:260px;height:120px">
 			</div>
-			</form>
-			<div style="margin-bottom:20px">
-			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px">确认</a>
+		</form>
+		</div>
+		<div id="adddlg-buttons">
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="addDestroyItem()" style="width:80px">确认</a>
 			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()" style="width:80px;margin-left:20px">清空</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#adddlg').dialog('close')" style="width:80px;margin-left:20px;margin-right:40px">取消</a>
+		</div> 	<!-- add dialog end -->
+	<!-- update dialog begin -->
+	<div id="updatedlg" class="easyui-dialog" style="width:400px;height:298px;padding:10px 20px"
+		closed="true" buttons="#updatedlg-buttons">
+		<form id="update_commodity_destroy" method="post" action="controller/update_commodity_destroy.php">
+			<div style="margin-bottom:20px">
+				<span>商品名称：</span>
+				<input class="easyui-textbox" name="cname" data-options="disabled:true" style="width:200px">
 			</div>
+			<div style="margin-bottom:20px">
+				<span>损耗数目：</span>
+				<input class="easyui-numberbox" name="dnum" required="true" style="width:60px">
+			</div>
+			<div>
+				<span>备注：</span>
+				<input class="easyui-textbox" name="statement" multiline="true" value="" style="width:260px;height:120px">
+			</div>
+		</form>
+		</div>
+		<div id="updatedlg-buttons">
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="updateDestroyItem()" style="width:80px">修改</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#updatedlg').dialog('close')" style="width:80px;margin-left:20px;margin-right:40px">取消</a>
+		</div> <!-- update dialog end -->
 	</div>
 	<script>
-		function loadInfo(name) {
-			$.ajax({
-				type:"post",
-				url:"model/load_commodity_info.php",
-				data: {'cname':name},
-				success:function(res){
-					var obj = eval('(' + res + ')');
-					$('#show_type').html(obj[0].tname);
-					$('#show_num').html(obj[0].cnum + " " +obj[0].small_unit);
-					$('#show_cost').html(obj[0].ccost);
-					$('#show_price').html(obj[0].csticker_price);
-					$('#show_smallunit').html(obj[0].small_unit);
+		$('#commodity_combobox').combobox({
+				url:'model/combobox.php',
+				method:'get',
+				valueField:'cid',
+				textField:'text',
+				onSelect: function(record){
+					$('#show_type').html(record.tname);
+					$('#show_num').html(record.cnum + " " +record.small_unit);
+					$('#show_cost').html(record.ccost);
+					$('#show_price').html(record.csticker_price);
+					$('#show_smallunit').html(record.small_unit);
 				}
 			});
+		function popAddDlg(){	
+			$('#adddlg').dialog('open').dialog('setTitle','添加损耗信息');
+		}
+		function addDestroyItem(){
+			$('#commodity_destroy').form('submit',{
+				onSubmit: function(){
+				 	return $(this).form('validate'); //完善
+				 },
+				success:function(data){
+					if (data == 1) {
+						clearForm();
+						$('#adddlg').dialog('close');
+						$('#data_grid').datagrid('reload');	
+						alert("损耗信息已记录！");
+					} else {
+						alert("记录失败!");
+					} 
+				}
+			});
+		}
+		var url;
+		function popUpdateDlg() {
+			var row = $('#data_grid').datagrid('getSelected');
+			if (row){
+				$('#updatedlg').dialog('open').dialog('setTitle','修改损耗信息');
+				$('#update_commodity_destroy').form('load',row);
+				url = 'controller/update_commodity_destroy.php?did='+row.did;
+			}
+		}
+		function updateDestroyItem() {
+			$('#update_commodity_destroy').form('submit',{
+				url: url,
+				onSubmit: function(){
+					return $(this).form('validate');
+				},
+				success: function(result){
+					if (result == 1){
+						$('#updatedlg').dialog('close');
+						$('#data_grid').datagrid('reload');	
+						alert("修改成功");
+					} else {
+						alert("修改失败");
+					}
+				}
+			});
+		}
+		function deleteCommodity(){
+			var row = $('#data_grid').datagrid('getSelected');
+			if (row){
+				$.messager.confirm('确认','确定删除该商品信息吗?',function(r){
+					if (r){
+						$.post('controller/delete_commodity_destroy.php',{did:row.did},function(result){
+							if (result == 1){
+								$('#data_grid').datagrid('reload');	// reload the user data
+								alert("商品已删除");
+							} else {
+								alert("修改失败");
+							}
+						},'json');
+					}
+				});
+			}
 		}
 		function clearPanel(){
 			$('#show_type').html("");
@@ -72,29 +186,16 @@
 			$('#show_price').html("");
 			$('#show_smallunit').html("");
 		}
-		function submitForm(){
-			// 完善时候，添加检测各输入框是否为空
-			$('#commodity_destroy').form('submit',{
-				// onSubmit: function(){
-				// 	return $(this).form('validate'); //完善
-				// },
-				success:function(data){
-					if (data == 1) {
-						alert("损耗信息已记录！");
-						$('#commodity_destroy').form('clear');
-						clearPanel();
-					} else {
-						alert("记录失败!");
-					} 
-				}
-			});
-			
-		}
+
 		function clearForm(){
-			$('#stock_input').form('clear');
+			$('#commodity_destroy').form('clear');
 			clearPanel();
 		}
-
+		function doSearch(value){
+			$('#data_grid').datagrid('load',{
+				cname: value,
+			});
+		}
 
 	</script>
 

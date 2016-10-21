@@ -62,14 +62,6 @@
 		 	$db->close();
 		 	return $res;
 		 }
-		 // //查询商品基本信息
-		 // public function queryCommodityInfo($cname) {
-		 // 	$db = new UseMysql();
-		 // 	$sql = "select tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid and cname='"."$cname'";
-		 // 	$res = $db->execute_dql($sql);
-		 // 	$db->close();
-		 // 	return $res;
-		 // }
 		 public function queryAllCommodityInfo() {
 		 	$db = new UseMysql();
 		 	$sql = "select cname,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid";
@@ -77,16 +69,7 @@
 		 	$db->close();
 		 	return $res;
 		 }
-		 
-		 // 效率较低，暂停使用
-		 //分页查看商品信息 
-		 // public function queryPageCommodityInfo($beginnum,$endnum) {
-		 // 	$db = new UseMysql();
-		 // 	$sql = "select cname,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid limit $beginnum,$endnum";
-		 // 	$res = $db->execute_dql_2($sql);
-		 // 	$db->close();
-		 // 	return $res;
-		 // }
+
 		 //更新商品信息
 		 public function updateCommodityInfo($oldcname,$newcname,$cunit_value,$ccost,$csticker_price) {
 		 	$db = new UseMysql();
@@ -111,6 +94,27 @@
 		 	$sql = "insert into tb_destroy(cid,dnum,statement) values($cid,$dnum,'$statement')";
 		 	// printf("%s",$sql);
 		 	$res = $db->execute_dml($sql);
+		 	$db->close();
+		 	return $res;
+		 }
+		 public function updateDestroyInfo($did,$dnum,$statement) {
+		 	$db = new UseMysql();
+		 	$sql = "update tb_destroy set dnum=$dnum,statement='$statement' where did=$did";
+		 	$res = $db->execute_dml($sql);
+		 	$db->close();
+		 	return $res;//bool
+		 }
+		 public function deleteDestroyInfo($did) {
+		 	$db = new UseMysql();
+		 	$sql = "delete from tb_destroy where did=$did";
+		 	$res = $db->execute_dml($sql);
+		 	$db->close();
+		 	return $res;//bool
+		 }
+		 public function querySaledetails($sid) {
+		 	$db = new UseMysql();
+		 	$sql = "select cname,snum,sale_price,snum*sale_price as sum from tb_saledetails,tb_commodity where tb_saledetails.cid=tb_commodity.cid and tb_saledetails.sid='$sid'";
+		 	$res = $db->execute_dql($sql);
 		 	$db->close();
 		 	return $res;
 		 }

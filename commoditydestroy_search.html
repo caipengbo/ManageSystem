@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>商品损耗查询</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="css/easyui.css">
+	<link rel="stylesheet" type="text/css" href="css/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/app.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+	<div class="easyui-panel" id="view_position_2">
+		<div id="commodity_search">
+		<div style="margin-bottom:10px;margin-left:200px">
+			<span>商品名称：</span>
+			<span><input class="easyui-searchbox" data-options="prompt:'请输入商品名称...',menu:'#categorymunu',searcher:doSearch" style="width:250px"></span>
+		</div>
+		<div id="categorymunu">
+			<!-- name置为空时，name=标签值 -->
+			<div data-options="name:'all',iconCls:'icon-ok'">所有类别</div>
+			<div data-options="name:'香烟'">香烟</div>
+			<div data-options="name:'白酒'">白酒</div>
+			<div data-options="name:'红酒'">红酒</div>
+			<div data-options="name:'啤酒'">啤酒</div>
+			<div data-options="name:'饮料'">饮料</div>
+		</div>
+		<table id="data_grid" title="损耗信息" class="easyui-datagrid" style="width:900px;height:340px"
+		data-options="
+		url:'model/get_destroy_datagrid.php',
+		method:'post',
+		fitColumns:true,
+		rownumbers:true	,
+		singleSelect:true,
+		striped:true,
+		pagination:true,
+		">
+		<thead>
+			<tr>
+			<!-- cname,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value  -->
+				<th field="cname" width="80">名称</th>
+				<th field="tname"  width="50">类别</th>
+				<th field="ccost"  width="60">进价</th>
+				<th field="csticker_price"  width="60">定价</th>
+				<th field="cnum" width="60" sortable="true">库存</th>
+				<th field="dnum"  width="40">损耗数目</th>
+				<th field="statement"  width="40">备注</th>
+			</tr>
+		</thead>
+		</table>
+		</div> <!-- commodity_search div end -->
+		
+	</div>
+	<script>
+		function doSearch(value,name){
+			if (name == "all")
+				name="";
+			$('#data_grid').datagrid('load',{
+				cname: value,
+				tname: name
+			});
+		}
+	</script>
+</body>
+</html>

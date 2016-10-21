@@ -8,50 +8,103 @@
 	<link rel="stylesheet" type="text/css" href="css/app.css">
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui.datagrid-detailview.js"></script>
 	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
 </head>
 <body>
 	<div class="easyui-panel" id="view_position_2">
-		<div id="commodity_search">
-		<div style="margin-bottom:10px;margin-left:200px">
-			<span>商品名称：</span>
-			<span><input class="easyui-searchbox" data-options="prompt:'请输入商品名称...',searcher:doSearch" style="width:250px"></span>	
+		<!-- salelist_search -->
+		<div id="salelist_search">
+			<div style="margin-bottom:10px;margin-left:80px">
+				<span>销售单号：</span>
+				<span><input id="sid" class="easyui-textbox" data-options="prompt:'请输入销售单号...',"
+				 style="width:200px"></span>	
+
+				 <span style="margin-left:10px">销售人员：</span>
+				<span><input id="username" class="easyui-textbox" data-options="prompt:'请输入销售人员...',"
+				 style="width:200px"></span>	
+			</div>
+
+			<div style="margin-bottom:10px;margin-left:80px">
+				<span >起始时间：</span>
+				<span><input id="starttime" class="easyui-datetimebox" name="" data-options="prompt:'选择起始时间',showSeconds:false"
+				 style="width:200px"></span>
+
+				 <span style="margin-left:10px">结束时间：</span>
+				<span><input id="endtime" class="easyui-datetimebox" name="" data-options="prompt:'选择终止时间',showSeconds:false"
+				 style="width:200px"></span>
+				 
+				 <span style="margin-left:60px"><a href="javascript:doSearch()" class="easyui-linkbutton" data-options="iconCls:'icon-search'"  style="width:88px">查询</a></span>
+			</div>
 		</div>
 
-		<table id="data_grid" title="所有商品" class="easyui-datagrid" style="width:900px;height:360px"
-		data-options="
-		url:'model/get_commodity_datagrid.php',
-		method:'post',
-		fitColumns:true,
-		rownumbers:true	,
-		singleSelect:true,
-		striped:true,
-		pagination:true,
-		sortName:'csticker_price',
-		sortOrder:'desc'
-		">
+		<!-- salelist_search end -->
+		<table id="data_grid" style="width:900px;height:360px"
+		>
 		<thead>
 			<tr>
-			<!-- cname,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value  -->
-				<th field="cname" width="80">商品</th>
-				<th field="tname"  width="50">类别</th>
-				<th field="cnum" width="60" sortable="true">销售数目</th>
-				<th field="ccost"  width="60" sortable="true">进价</th>
-				<th field="csticker_price"  width="60" sortable="true">定价</th>
-				<th field="cunit_value"  width="40">规格</th>
-				<th field="small_unit"  width="40">主单位</th>
-				<th field="big_unit"  width="40">辅助单位</th>
+				<th field="sid" width="90">销售单号</th>
+				<th field="sale_money" width="80">应收金额</th>
+				<th field="get_money"  width="80">实收金额</th>
+				<th field="itemnum"  width="50">件数</th>
+				<th field="username" width="60">销售人员</th>
+				<th field="stime" width="100">时间</th>
 			</tr>
 		</thead>
 		</table>
-		</div> <!-- commodity_search div end -->
 		
+
 	</div>
 	<script>
-		function doSearch(value,name){
+		$(function(){
+			$('#data_grid').datagrid({
+				view: detailview,
+				url:"model/get_salelist_datagrid.php",
+				method:'post',
+				title:"销售列表",
+				pagination:true,
+				rownumbers:true,
+				singleSelect:true,
+				fitColumns:true,
+				detailFormatter:function(index,row){
+					return '<div style="padding:2px"><table id="ddv-' + index + '"></table></div>';
+				},
+				onExpandRow: function(index,row){
+					$('#ddv-'+index).datagrid({
+						url:'model/get_saledetail_subgrid.php?sid='+row.sid,
+						fitColumns:true,
+						singleSelect:true,
+						rownumbers:true,
+						loadMsg:'',
+						height:'auto',
+						columns:[[
+							{field:'cname',title:'商品名称',width:100},
+							{field:'snum',title:'数量',width:80},
+							{field:'sale_price',title:'售价',width:80},
+							{field:'sum',title:'金额',width:80}
+						]],
+						onResize:function(){
+							$('#data_grid').datagrid('fixDetailRowHeight',index);
+						},
+						onLoadSuccess:function(){
+							setTimeout(function(){
+								$('#data_grid').datagrid('fixDetailRowHeight',index);
+							},0);
+						}
+					});
+					$('#data_grid').datagrid('fixDetailRowHeight',index);
+				}
+			});
+		});
+	</script>
+	<script>
+		function doSearch(){
+			// alert($('#stime').datetimebox('getValue'));
 			$('#data_grid').datagrid('load',{
-				cname: value,
-				tname: name
+				sid: $('#sid').val(),
+				starttime: $('#starttime').datetimebox('getValue'),
+				endtime: $('#endtime').datetimebox('getValue'),
+				username: $('#username').val()
 			});
 		}
 	</script>
