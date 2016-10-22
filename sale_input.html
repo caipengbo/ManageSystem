@@ -98,7 +98,7 @@
 				</div>
 				<div style="margin-bottom:10px">
 					<span>当前库存：</span>
-					<input id="updt_num" class="easyui-numberbox" name="cnum" style="width:150px;" data-options="" required=true>
+					<input id="updt_num" class="easyui-numberbox" data-options="disabled:true" style="width:150px;" data-options="" required=true>
 				</div>
 				<div style="margin-bottom:10px">
 					<span>销售数目：</span>
@@ -232,12 +232,19 @@
 			}
 		}
 		function updateRow() {
+			var oldsale_money;
 			selectedRow.snum = $('#updt_sale_num').numberspinner('getValue');
+			if (parseInt(selectedRow.snum) > parseInt(selectedRow.cnum)) {
+				alert("库存不足，无法修改");
+				return;
+			}
 			selectedRow.sale_price = $('#updt_sale_price').numberbox('getValue');
+			oldsale_money = parseFloat(selectedRow.sale_money);
 			selectedRow.sale_money = parseFloat(selectedRow.snum) * parseFloat(selectedRow.sale_price );
-			
+			countmoney = countmoney - oldsale_money + selectedRow.sale_money;
 			$('#data_grid').datagrid('updateRow', selectedRow);
 			$('#data_grid').datagrid('refreshRow',rowindex);
+			$('#show_countmoney').html(countmoney);
 			$('#updatedlg').dialog('close');
 		}
 		function deleteRow() {
