@@ -4,8 +4,12 @@
 	$CS = new CommodityService();
 	$res = $CS->updateDestroyInfo($did,$_POST['dnum'],$_POST['statement']);
 	if ($res) {
-		$CS->addNum();
-		echo 1;
+		$res = $CS->addNum_2($_POST['cname'],$_POST['diff']);
+		if ($res) {
+			echo 1;
+		} else {
+			echo 0;
+		}
 	} else {
 		echo 0;
 	}

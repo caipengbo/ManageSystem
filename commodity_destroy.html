@@ -82,14 +82,15 @@
 	<!-- update dialog begin -->
 	<div id="updatedlg" class="easyui-dialog" style="width:400px;height:298px;padding:10px 20px"
 		closed="true" buttons="#updatedlg-buttons">
-		<form id="update_commodity_destroy" method="post" action="controller/update_commodity_destroy.php">
+		<form id="update_commodity_destroy" method="post" action="">
 			<div style="margin-bottom:20px">
 				<span>商品名称：</span>
-				<input class="easyui-textbox" name="cname" data-options="disabled:true" style="width:200px">
+				<input class="easyui-textbox" name="cname" data-options="readonly:true" style="width:200px">
 			</div>
 			<div style="margin-bottom:20px">
 				<span>损耗数目：</span>
-				<input class="easyui-numberbox" name="dnum" required="true" style="width:60px">
+				<input id="update_dnum" class="easyui-numberbox" name="dnum" required="true" style="width:60px">
+				<input id="diff" type="hidden" name="diff"><!--原损耗值与现损耗值的差-->
 			</div>
 			<div>
 				<span>备注：</span>
@@ -124,6 +125,11 @@
 		function addDestroyItem(){
 			var num = $('#destroy_num').numberbox('getValue');
 			var destroynum = parseInt(num);
+
+			if (destroynum <= 0) {
+				alert("损耗数目必须大于0！");
+				return;
+			}
 			if ( currentnum < destroynum || currentnum <= 0 ) {
 				alert("库存不足！");
 				return;
@@ -145,15 +151,33 @@
 			});
 		}
 		var url;
+		var olddnum;
 		function popUpdateDlg() {
 			var row = $('#data_grid').datagrid('getSelected');
 			if (row){
 				$('#updatedlg').dialog('open').dialog('setTitle','修改损耗信息');
 				$('#update_commodity_destroy').form('load',row);
 				url = 'controller/update_commodity_destroy.php?did='+row.did;
+				currentnum = parseInt(row.cnum);
+				olddnum = parseInt(row.dnum);
 			}
 		}
 		function updateDestroyItem() {
+			// 更新时检测库存
+			var getnum = $('#update_dnum').numberbox('getValue');
+			var newdnum = parseInt(getnum);
+			var diff;
+			if (newdnum<=0) {
+				alert("损耗数目必须大于0！");
+				return;
+			}
+			if ( currentnum < newdnum || currentnum <= 0 ) {
+				alert("库存不足！");
+				return;
+			}
+			// 求原损耗值与现损耗值的差值
+			diff = olddnum - newdnum;
+			$('#diff').val(diff);
 			$('#update_commodity_destroy').form('submit',{
 				url: url,
 				onSubmit: function(){

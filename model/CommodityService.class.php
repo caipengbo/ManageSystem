@@ -37,6 +37,13 @@
 		 	$db->close();
 		 	return $res;//bool
 		 }
+		 public function addNum_2($cname,$num) {
+		 	$db = new UseMysql();
+		 	$sql = "update tb_commodity set cnum=cnum+$num where cname='$cname'";
+		 	$res = $db->execute_dml($sql);
+		 	$db->close();
+		 	return $res;//bool
+		 }
 		 //减少库存
 		 public function reduceNum($id,$num) {
 		 	$db = new UseMysql();
