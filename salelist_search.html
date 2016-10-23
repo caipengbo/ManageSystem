@@ -39,7 +39,7 @@
 		</div>
 
 		<!-- salelist_search end -->
-		<table id="data_grid" style="width:900px;height:360px"
+		<table id="data_grid" class="easyui-datagrid" style="width:900px;height:360px"
 		>
 		<thead>
 			<tr>
@@ -96,8 +96,9 @@
 				}
 			});
 		});
-	</script>
-	<script>
+		$(function(){
+			$('#data_grid').datagrid('clientPaging');
+		});
 		function doSearch(){
 			// alert($('#stime').datetimebox('getValue'));
 			$('#data_grid').datagrid('load',{

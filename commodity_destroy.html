@@ -104,6 +104,9 @@
 		</div> <!-- update dialog end -->
 	</div>
 	<script>
+		$(function(){
+			$('#data_grid').datagrid('clientPaging');
+		});
 		var currentnum;
  		function popAddDlg(){	
 			$('#commodity_combobox').combobox({

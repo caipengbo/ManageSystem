@@ -53,6 +53,9 @@
 		
 	</div>
 	<script>
+		$(function(){
+			$('#data_grid').datagrid('clientPaging');
+		});
 		function doSearch(value,name){
 			if (name == "all")
 				name="";

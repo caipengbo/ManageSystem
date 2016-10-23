@@ -85,6 +85,9 @@
 		</div>
 	</div>
 	<script>
+		$(function(){
+			$('#data_grid').datagrid('clientPaging');
+		});
 		var url;
 		function popDlg(){	
 			var row = $('#data_grid').datagrid('getSelected');

@@ -28,13 +28,15 @@
 		</div>
 		<table id="data_grid" title="所有商品" class="easyui-datagrid" style="width:900px;height:340px"
 		data-options="
-		url:'model/test.php',
+		url:'model/get_commodity_datagrid.php',
 		method:'post',
 		fitColumns:true,
 		rownumbers:true	,
 		singleSelect:true,
 		striped:true,
 		pagination:true,
+		sortName:'csticker_price',
+		sortOrder:'desc'
 		">
 		<thead>
 			<tr>

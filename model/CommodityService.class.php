@@ -61,7 +61,7 @@
 		 	$result = json_decode($res,true);
 		 	return $result;
 		 }
-		 //查询商品信息
+		 // 查询商品信息
 		 public function queryCommodityInfo() {
 		 	$db = new UseMysql();
 		 	$sql = "select cid,cname as text,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid";
@@ -69,13 +69,26 @@
 		 	$db->close();
 		 	return $res;
 		 }
-		 public function queryAllCommodityInfo() {
+		 // 用于datagrid的查询商品函数
+		 public function queryCommodityInfo_2($cname,$tname,$sort,$order) {
 		 	$db = new UseMysql();
-		 	$sql = "select cname,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid";
-		 	$res = $db->execute_dql($sql);
-		 	$db->close();
-		 	return $res;
+		 	$where = "cname like '%$cname%' and tname like '%$tname%'";
+			$res = $db->execute_dql_2("select count(*) from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid and " .$where);
+			$result = array();
+			$result["total"] = $res[0]['count(*)'];
+			$sql = "select * from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid and " . $where . "  order by $sort $order";
+			$rows = array();
+			$rows = $db->execute_dql_2($sql);
+			$result["rows"] = $rows;
+			echo json_encode($result);
 		 }
+		 // public function queryAllCommodityInfo() {
+		 // 	$db = new UseMysql();
+		 // 	$sql = "select cname,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid";
+		 // 	$res = $db->execute_dql($sql);
+		 // 	$db->close();
+		 // 	return $res;
+		 // }
 
 		 //更新商品信息
 		 public function updateCommodityInfo($oldcname,$newcname,$cunit_value,$ccost,$csticker_price) {
@@ -117,6 +130,39 @@
 		 	$res = $db->execute_dml($sql);
 		 	$db->close();
 		 	return $res;//bool
+		 }
+		  //Show in datagrid
+		 public function queryDestroyInfo($cname,$tname) {
+		 	$db = new UseMysql();
+		 	$where = "cname like '%$cname%' and tname like '%$tname%'";
+			$res = $db->execute_dql_2("select count(*) from tb_commodity,tb_type,tb_destroy where tb_commodity.tid=tb_type.tid and tb_commodity.cid=tb_destroy.cid and " .$where);
+			$result = array();
+			$result["total"] = $res[0]['count(*)'];
+			$sql = "select * from tb_commodity,tb_type,tb_destroy where tb_commodity.tid=tb_type.tid and tb_commodity.cid=tb_destroy.cid and " .$where;
+			$rows = array();
+			$rows = $db->execute_dql_2($sql);
+			$result["rows"] = $rows;
+			echo json_encode($result);
+		 }
+		 //Show in datagrid
+		 public function querySalelist($sid,$starttime,$endtime,$username) {
+		 	$db = new UseMysql();
+		 	$where = " where sid like '%$sid%' and username like '%$username%'";
+			if ($starttime != "" && $endtime != "") {
+				$where .= " and stime between '$starttime' and '$endtime'";
+			} else if ($starttime != "" && $endtime == "") {
+				$where .= " and stime > '$starttime'";
+			} else if ($starttime == "" && $endtime != "") {
+				$where .= " and stime < '$endttime'";
+			}
+			$res = $db->execute_dql_2("select count(*) from  tb_sale".$where);
+			$result = array();
+			$result["total"] = $res[0]['count(*)'];
+			$sql = "select * from tb_sale ". $where ." order by stime desc";
+			$rows = array();
+			$rows = $db->execute_dql_2($sql);
+			$result["rows"] = $rows;
+			echo json_encode($result);
 		 }
 		 public function querySaledetails($sid) {
 		 	$db = new UseMysql();
