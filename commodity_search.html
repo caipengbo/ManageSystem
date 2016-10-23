@@ -28,7 +28,7 @@
 		</div>
 		<table id="data_grid" title="所有商品" class="easyui-datagrid" style="width:900px;height:340px"
 		data-options="
-		url:'model/get_commodity_datagrid.php',
+		url:'model/test.php',
 		method:'post',
 		fitColumns:true,
 		rownumbers:true	,
@@ -54,6 +54,9 @@
 		
 	</div>
 	<script>
+		$(function(){
+			$('#data_grid').datagrid('clientPaging');
+		});
 		function doSearch(value,name){
 			if (name == "all")
 				name="";
