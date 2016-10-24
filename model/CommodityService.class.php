@@ -166,7 +166,7 @@
 		 }
 		 public function querySaledetails($sid) {
 		 	$db = new UseMysql();
-		 	$sql = "select cname,snum,sale_price,snum*sale_price as sum from tb_saledetails,tb_commodity where tb_saledetails.cid=tb_commodity.cid and tb_saledetails.sid='$sid'";
+		 	$sql = "select sid,tb_saledetails.cid,cname,snum,sale_price,snum*sale_price as sum from tb_saledetails,tb_commodity where tb_saledetails.cid=tb_commodity.cid and tb_saledetails.sid='$sid'";
 		 	$res = $db->execute_dql($sql);
 		 	$db->close();
 		 	return $res;
