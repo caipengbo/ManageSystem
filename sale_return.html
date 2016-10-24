@@ -70,8 +70,6 @@
 					return '<div style="padding:2px"><table id="ddv-' + index + '"></table></div>';
 				},
 				onExpandRow: function(index,row){
-					var hiddenval = index;
-					alert(index);
 					$('#ddv-'+index).datagrid({
 						url:'model/get_saledetail_subgrid.php?sid='+row.sid,
 						fitColumns:true,
@@ -80,18 +78,15 @@
 						loadMsg:'',
 						height:'auto',
 						columns:[[
-							//两个隐藏列用于实现退货功能
-							{field:'index',title:'隐藏-子表格编号',
-								formatter: function(value,row,index){
-									return hiddenval;
-								}
-							},
+							//两个隐藏列用于实现退货功能（传递参数到后台，实现数据库的更改）
 							{field:'sid',title:'隐藏-销售编号',hidden:true},
 							{field:'cid',title:'隐藏-商品编号',hidden:true},
+							{field:'itemnum',width:80,title:'隐藏-商品件数'},
 							{field:'cname',title:'商品名称',width:100},
 							{field:'snum',title:'数量',width:80},
 							{field:'sale_price',title:'售价',width:80},
 							{field:'sum',title:'金额',width:80},
+							// 退货链接
 							{field:'link',width:80,title:'退货',formatter:addReturnLink}
 						]],
 						onResize:function(){
@@ -108,24 +103,28 @@
 				}
 			});
 		});
-		var row;
-		function addReturnLink(paramval,paramrow){
-		    row = paramrow;
+		// 根据sid 和 cid 生成退货链接
+		function addReturnLink(val,row,index){
 		    var str = "退货";
-		    return "<a  href='javascript:openLink()'>"+str+"</a>";
+		    return "<a  href=\"javascript:openLink('"+row.sid+"','"+row.cid+"','"+row.itemnum+"','"
+		    +row.sale_price+"','"
+		    +row.snum+"')\">"+str+"</a>";
 		}
-		function openLink() {
-			var url = "?sid=";
+		// 点击链接发送数据到后台
+		function openLink(paramsid,paramcid,paramitemnum,paramprice,paramsnum) {
  		    $.messager.confirm('确认','确认退货?',function(r){
 				if (r){
 					$.ajax({
 						    type: "POST",
 						    url: "controller/sale_return.php",
 						    data: {
-						    	sid : row.sid,
-						    	cid : row.cid
+						    	sid : paramsid,
+						    	cid : paramcid,
+						    	itemnum : paramitemnum,
+						    	sale_price : paramprice,
+						    	snum : paramsnum
 						    },
-						    success: function(){
+						    success: function(data){
 						                 alert("ok");
 						             },
 						    dataType: "json",

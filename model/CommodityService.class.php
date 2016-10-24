@@ -166,10 +166,38 @@
 		 }
 		 public function querySaledetails($sid) {
 		 	$db = new UseMysql();
-		 	$sql = "select sid,tb_saledetails.cid,cname,snum,sale_price,snum*sale_price as sum from tb_saledetails,tb_commodity where tb_saledetails.cid=tb_commodity.cid and tb_saledetails.sid='$sid'";
+		 	$sql = "
+		 	select tb_saledetails.sid,tb_saledetails.cid,cname,snum,sale_price,snum*sale_price as sum,itemnum from tb_saledetails,tb_commodity,tb_sale where tb_saledetails.cid=tb_commodity.cid and tb_saledetails.sid='$sid' and tb_saledetails.sid=tb_sale.sid";
 		 	$res = $db->execute_dql($sql);
 		 	$db->close();
 		 	return $res;
+		 }
+		 // 退款，删除销售详细条目 tb_saledetails
+		 public function deleteSaleItem($sid,$cid) {
+		 	$db = new UseMysql();
+		 	$sql = "delete from tb_saledetails where sid='$sid' and cid='$cid'";
+		 	echo $sql;
+		 	$res = $db->execute_dml($sql);
+		 	$db->close();
+		 	return $res;//bool
+		 }
+		 // 退款，修改销售单信息 tb_sale
+		 public function updateSaleInfo($sid,$snum,$sale_price) {
+		 	$db = new UseMysql();
+		 	$sql = "update tb_sale set itemnum=itemnum-1,sale_money=sale_money-$snum*$sale_price where sid='$sid'";
+		 	echo $sql;
+		 	$res = $db->execute_dml($sql);
+		 	$db->close();
+		 	return $res;//bool
+		 }
+		 // 退款，当条目仅有一条时，删除此销售单信息
+		 public function deleteSaleInfo($sid) {
+		 	$db = new UseMysql();
+		 	$sql = "delete from tb_sale where sid='$sid'";
+		 	echo $sql;
+		 	$res = $db->execute_dml($sql);
+		 	$db->close();
+		 	return $res;//bool
 		 }
 	}
 
