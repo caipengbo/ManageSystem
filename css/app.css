@@ -59,3 +59,14 @@ commodity_modify.html css
 	margin-left: 5px;
 	font-size: 1.3em;
 }
+/*
+	saleroom_search.html
+*/
+.showtoday {
+	position : relative;
+	left:805px; 
+	top:-45px;
+	width: 200px;
+	margin: 0;
+	font-size: 15px;
+}

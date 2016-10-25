@@ -47,6 +47,12 @@
 		select * from tb_sale;
 		select * from tb_saledetails;
 
+select count(showtime) from (select date_format(stime,'%Y-%m-%d') as showtime,sum(sale_money)
+from tb_sale where stime>"2016-10-21" group by year(stime), month(stime),day(stime)) as a;
 
+select count(*) from ( select sum(sale_money) from tb_sale where stime>"2016-10-21" group by year(stime), month(stime),day(stime)) as a;
+select date_format(stime,'%Y-%m-%d') as showtime,sum(sale_money)
+from tb_sale where stime>"2016-10-21" group by year(stime), month(stime),day(stime) order by showtime desc
 
+select sum(sale_money) from tb_sale where stime>"2016-10-25 00:00:00" and stime<now()
 

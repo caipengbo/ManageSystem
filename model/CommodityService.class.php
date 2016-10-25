@@ -164,6 +164,43 @@
 			$result["rows"] = $rows;
 			echo json_encode($result);
 		 }
+		 // 统计销售额
+		 public function countSaleroom($starttime,$endtime,$order) {
+		 	$db = new UseMysql();
+		 	$where = "";
+			if ($starttime != "" && $endtime != "") {
+				$where .= "where stime between '$starttime' and '$endtime'";
+			} else if ($starttime != "" && $endtime == "") {
+				$where .= "where stime > '$starttime'";
+			} else if ($starttime == "" && $endtime != "") {
+				$where .= "where stime < '$endttime'";
+			}
+			$res = $db->execute_dql_2("select count(*) from ( select sum(sale_money) from tb_sale ".$where." group by year(stime), month(stime),day(stime)) as a");
+			$result = array();
+			$result["total"] = $res[0]['count(*)'];
+			$sql = "select date_format(stime,'%Y-%m-%d') as showtime,sum(sale_money) as summoney
+			from tb_sale ". $where ."group by year(stime), month(stime),day(stime) order by showtime $order";
+			$rows = array();
+			$rows = $db->execute_dql_2($sql);
+			$result["rows"] = $rows;
+			echo json_encode($result);
+		 }
+		 // 统计今日销售金额
+		 public function countTodayMoney($starttime){
+		 	$db = new UseMysql();
+		 	$where = " where stime>='$starttime' and stime<=now()";
+		 	$sql = "select sum(sale_money) as today from tb_sale" . $where;
+		 	$res = $db->execute_dql_2($sql);
+		 	// echo $sql;
+		 	$db->close();
+		 	if (is_null($res[0]['today'])) {
+		 		$result = 0;
+		 	} else {
+		 		$result = $res[0]['today'];
+		 	}
+		 	
+		 	return $result;
+		 }
 		 public function querySaledetails($sid) {
 		 	$db = new UseMysql();
 		 	$sql = "
@@ -176,7 +213,6 @@
 		 public function deleteSaleItem($sid,$cid) {
 		 	$db = new UseMysql();
 		 	$sql = "delete from tb_saledetails where sid='$sid' and cid='$cid'";
-		 	echo $sql;
 		 	$res = $db->execute_dml($sql);
 		 	$db->close();
 		 	return $res;//bool
@@ -185,7 +221,6 @@
 		 public function updateSaleInfo($sid,$snum,$sale_price) {
 		 	$db = new UseMysql();
 		 	$sql = "update tb_sale set itemnum=itemnum-1,sale_money=sale_money-$snum*$sale_price where sid='$sid'";
-		 	echo $sql;
 		 	$res = $db->execute_dml($sql);
 		 	$db->close();
 		 	return $res;//bool
@@ -194,7 +229,6 @@
 		 public function deleteSaleInfo($sid) {
 		 	$db = new UseMysql();
 		 	$sql = "delete from tb_sale where sid='$sid'";
-		 	echo $sql;
 		 	$res = $db->execute_dml($sql);
 		 	$db->close();
 		 	return $res;//bool

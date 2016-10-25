@@ -39,7 +39,7 @@
 		</div>
 
 		<!-- salelist_search end -->
-		<table id="data_grid" class="easyui-datagrid" style="width:900px;height:360px"
+		<table id="data_grid" class="easyui-datagrid" style="width:900px;height:340px"
 		>
 		<thead>
 			<tr>
@@ -125,7 +125,12 @@
 						    	snum : paramsnum
 						    },
 						    success: function(data){
-						                 alert("ok");
+						                 if (data == 1) {
+						                 	$('#data_grid').datagrid("reload"); 
+						                 	alert("退款成功");
+						                 }
+						                 else 
+						                 	alert("退款失败");
 						             },
 						    dataType: "json",
 						});
