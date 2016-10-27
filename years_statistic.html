@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>年销售统计</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="css/easyui.css">
+	<link rel="stylesheet" type="text/css" href="css/icon.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
+	<script src="js/highcharts.js"></script>
+	<script src="js/highcharts-exporting.js"></script>
+
+
+</head>
+<body>
+	<div id="tab" class="easyui-tabs" style="width:1200px;height:500px"
+	 data-options="pill:true,justified:true">
+		<div title="销售走势图" style="padding:10px">
+			<div id="trend" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+		</div>
+		<div title="各月统计图" style="padding:10px">
+			aaaaaaaaaaaa
+		</div>
+		<div title="销售比例图" style="padding:10px">
+			adddsdd
+		</div>
+	</div>
+<script>
+		
+        $(function () {
+        $.getJSON('data.php?callback=?', function (data) {
+
+        $('#trend').highcharts({
+            chart: {
+                zoomType: 'x'
+            },
+            title: {
+                text: '、、、、年销售趋势'
+            },
+            
+            xAxis: {
+                type: 'date',
+                title: {
+                    text: '/天'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: '销售额'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+            },
+
+            series: [{
+                type: 'area',
+                name: '销售额',
+                data:  data
+            }]
+        });
+    });
+});
+ 
+	</script>
+</body>
+	
+</html>
