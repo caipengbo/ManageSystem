@@ -10,85 +10,128 @@
 	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
 	<script src="js/highcharts.js"></script>
 	<script src="js/highcharts-exporting.js"></script>
-
-
 </head>
 <body>
 	<div id="tab" class="easyui-tabs" style="width:1000px;height:500px"
 	 data-options="pill:true,justified:true">
 		<div title="销售走势图" style="padding:10px">
-			<div id="trend" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+			<div id="years_trend" style="min-width: 800px; height: 400px; margin: 0 auto"></div>
 		</div>
 		<div title="各月统计图" style="padding:10px">
-			aaaaaaaaaaaa
+			<div id="monthly_statistic" style="min-width: 980px; height: 400px; margin: 0 auto"></div>
 		</div>
 		<div title="销售比例图" style="padding:10px">
 			adddsdd
 		</div>
 	</div>
 <script>
-		
+	// years trend charts begin
+	$(function () {
+		$.getJSON('data1.php?callback=?', function (data) {
+			$('#years_trend').highcharts({
+				chart: {
+					zoomType: 'x'
+				},
+				title: {
+					text: '、、、、年销售趋势'
+				},
+				subtitle: {
+					text: '——华名烟酒店'
+				},
+				xAxis: {
+					type: 'date',
+					title: {
+						text: '时间（天）'
+					}
+				},
+				yAxis: {
+					min : 0,
+					title: {
+						text: '销售额 (元)'
+					}
+				},
+				legend: {
+					enabled: false
+				},
+				plotOptions: {
+					area: {
+						fillColor: {
+							linearGradient: {
+								x1: 0,
+								y1: 0,
+								x2: 0,
+								y2: 1
+							},
+							stops: [
+							[0, Highcharts.getOptions().colors[0]],
+							[1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+							]
+						},
+						marker: {
+							radius: 2
+						},
+						lineWidth: 1,
+						states: {
+							hover: {
+								lineWidth: 1
+							}
+						},
+						threshold: null
+					}
+				},
+
+				series: [{
+					type: 'area',
+					name: '销售额',
+					data:  data
+				}]
+			});
+		});
+	}); // years trend charts end
+	// monthly_statistic begin
         $(function () {
-        $.getJSON('data.php?callback=?', function (data) {
-
-        $('#trend').highcharts({
-            chart: {
-                zoomType: 'x'
-            },
-            title: {
-                text: '、、、、年销售趋势'
-            },
-            
-            xAxis: {
-                type: 'date',
+            $.getJSON('data2.php', function (data) {
+             $('#monthly_statistic').highcharts({
+                chart: {
+                    type: 'column'
+                },
                 title: {
-                    text: '/天'
-                }
-            },
-            yAxis: {
-                title: {
-                    text: '销售额'
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            plotOptions: {
-                area: {
-                    fillColor: {
-                        linearGradient: {
-                            x1: 0,
-                            y1: 0,
-                            x2: 0,
-                            y2: 1
-                        },
-                        stops: [
-                            [0, Highcharts.getOptions().colors[0]],
-                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                        ]
-                    },
-                    marker: {
-                        radius: 2
-                    },
-                    lineWidth: 1,
-                    states: {
-                        hover: {
-                            lineWidth: 1
-                        }
-                    },
-                    threshold: null
-                }
-            },
-
-            series: [{
-                type: 'area',
-                name: '销售额',
-                data:  data
-            }]
-        });
-    });
-});
- 
+                    text: '每月销售统计'
+                },
+                subtitle: {
+                    text: '华名烟酒'
+                },
+                xAxis: {
+                    categories: [
+                    '一月','二月','三月','四月','五月','六月',
+                    '七月','八月', '九月','十月','十一月', '十二月'
+                    ],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '金额 (元)'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f} 元</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series:  data
+            });
+         });
+        }); // monthly_statistic end
 	</script>
 </body>
 	

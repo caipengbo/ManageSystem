@@ -29,8 +29,7 @@
 
 	-- 销售表 
 	
-	insert into tb_sale(cid,sale_price,snum,username,stime) values(17,13,1,"123",now());
-	insert into tb_sale(cid,sale_price,snum,username,stime) values(19,3,2,"123",now());
+
 	-- 查询
 	--查询商品信息
 	select cname as text,tname,small_unit,cnum,ccost,csticker_price from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid;
@@ -39,8 +38,18 @@
 	create table tb_sale(sid varchar(20) primary key,sale_money float(10,2),get_money float(10,2),itemnum int,username varchar(15),
 		stime datetime,foreign key(username) references tb_user(username));
 	create table tb_saledetails(sid varchar(20),cid int,snum int,sale_price float(8,2),foreign key(sid) references tb_sale(sid),foreign key(cid) references tb_commodity(cid));
-	insert into tb_sale values(sid,sale_money,get_money,itemnum,username,now())
-	insert into tb_saledetails(sid,cid,snum,sale_price)
+	
+		  |    1350.00 |   2000.00 |       2 | 123      | 2016-10-17 21:55:06
+	
+		insert into tb_sale values("sale160517215505",222,300,2,"username","2016-5-17 21:55:06")
+			insert into tb_sale values("sale160617215505",222,300,2,"username","2016-6-17 21:55:06")
+				insert into tb_sale values("sale160717215505",222,300,2,"username","2016-7-17 21:55:06")
+
+	insert into tb_saledetails values("sale160217215505",4,1,1000);
+		insert into tb_saledetails values("sale160317215505",3,3,1000);
+			insert into tb_saledetails values("sale160417215505",3,3,1000);
+				insert into tb_saledetails values("sale160617215505",3,3,1000);
+					insert into tb_saledetails values("sale160717215505",3,3,1000);
 	update tb_commodity set cnum=cnum-;
 		delete from tb_saledetails;
 		delete from tb_sale;
@@ -56,3 +65,8 @@ from tb_sale where stime>"2016-10-21" group by year(stime), month(stime),day(sti
 
 select sum(sale_money) from tb_sale where stime>"2016-10-25 00:00:00" and stime<now()
 
+
+
+select month(stime),sum(ccost * snum) from tb_commodity,tb_sale,tb_saledetails 
+where tb_commodity.cid=tb_saledetails.cid  
+and tb_saledetails.sid=tb_sale.sid and year(stime)='2016'  group by month(stime)

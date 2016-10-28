@@ -32,13 +32,33 @@ class UseMysql {
     mysqli_free_result($result);
     return json_encode($arr);
   }
-  //执行查询语句  返回数组
+  //执行查询语句  返回索引数组
   public function execute_dql_2($sql) {
     $arr = array();
     $result = mysqli_query($this->connect,$sql) or die(mysqli_error($this->connect));
     $i = 0;
     while ( $row = mysqli_fetch_array($result,MYSQL_ASSOC)) {
       $arr[$i++] = $row;
+      }
+    
+    mysqli_free_result($result);
+    return $arr;
+  }
+  //执行查询语句  返回下标数组 highcharts专用
+  // bool = true时，文字-数字类型，第二个查询设置成float类型
+  // bool = false, 查询出数组
+  public function execute_dql_3($sql,$bool) {
+    $arr = array();
+    $result = mysqli_query($this->connect,$sql) or die(mysqli_error($this->connect));
+    $i = 0;
+    while ( $row = mysqli_fetch_array($result,MYSQLI_NUM)) {
+      $arr[$i] = $row;
+     if ($bool) {
+        $arr[$i][1] = floatval($arr[$i][1]);  
+     } else {
+        $arr[$i][0] = floatval($arr[$i][0]);
+     }
+      $i++;
       }
     /*  if ( !empty($result) ) {
             while ( $row = mysqli_fetch_array($result,MYSQL_ASSOC)) {
@@ -82,30 +102,4 @@ class UseMysql {
         }
  }
 
-  // //获取分页数目 与 查询结果数目
-  // public function getPageCount($sql,$pageSize,&$rowCount) {
-  //     //  $sql = "select count(*) from user";
-  //         $res = mysqli_query($this->connect,$sql) or die(mysqli_error($this->connect));
-  //         $row = mysqli_fetch_row($res);
-  //         mysqli_free_result($res);
-  //         $rowCount = $row[0];
-  //       //echo "共----".$rowCount."-----条记录<br/>";
-  //         $pageCount = ceil($rowCount/$pageSize);
-  //         return $pageCount;
-  //       }
-  //     //根据 当前页  每页显示个数 返回结果集（数组）
-  //       public function getListByPage($sql,$pageNow,$pageSize) {
-  //         $start =($pageNow-1) * $pageSize;
-  //       //sql 类似于 : select uid,name from user
-  //         $sql2 = $sql." limit ". $start .",$pageSize";
-  //         $arr = array();
-  //         $result = mysqli_query($this->connect,$sql2) or die(mysqli_error($this->connect));
-  //         $i = 0;
-  //         while ( $row = mysqli_fetch_array($result,MYSQL_ASSOC)) {
-  //           $arr[$i++] = $row;
-  //         }
-  //         mysqli_free_result($result);
-  //       //返回数组
-  //         return $arr;
-  //       }
 ?>
