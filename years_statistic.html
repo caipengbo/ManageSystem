@@ -9,6 +9,7 @@
 	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
 	<script src="js/highcharts.js"></script>
+	<script src="js/highcharts-3d.js"></script>
 	<script src="js/highcharts-exporting.js"></script>
 </head>
 <body>
@@ -21,7 +22,7 @@
 			<div id="monthly_statistic" style="min-width: 980px; height: 400px; margin: 0 auto"></div>
 		</div>
 		<div title="销售比例图" style="padding:10px">
-			adddsdd
+			<div id="years_percentage" style="min-width: 980px;height: 400px"></div>
 		</div>
 	</div>
 <script>
@@ -132,6 +133,43 @@
             });
          });
         }); // monthly_statistic end
+    //  years percentage begin
+    $(function () {
+    $.getJSON('data3.php', function (data) {
+                 $('#years_percentage').highcharts({
+                    chart: {
+                        type: 'pie',
+                        options3d: {
+                            enabled: true,
+                            alpha: 45,
+                            beta: 0
+                        }
+                    },
+                    title: {
+                        text: '各类商品销售额比例'
+                    },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            depth: 35,
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.name}'
+                            }
+                        }
+                    },
+                    series: [{
+                        type: 'pie',
+                        name: '销售额',
+                        data: data
+                    }]
+                });
+             }); 
+	}); // years percentage end
 	</script>
 </body>
 	

@@ -1,61 +1,26 @@
 
 <!DOCTYPE HTML>
 <html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>条形图</title>
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script src="js/highcharts.js"></script>
-    <script src="js/highcharts-exporting.js"></script>
-</head>
-<body>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>图形测试页面</title>
 
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script src="js/highcharts.js"></script>
 
-    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-    <script type="text/javascript">
-        $(function () {
-            $.getJSON('data.php', function (data) {
-             $('#container').highcharts({
-                chart: {
-                    type: 'column'
-                },
-                title: {
-                    text: '每月销售统计'
-                },
-                subtitle: {
-                    text: '华名烟酒'
-                },
-                xAxis: {
-                    categories: [
-                    '一月','二月','三月','四月','五月','六月',
-                    '七月','八月', '九月','十月','十一月', '十二月'
-                    ],
-                    crosshair: true
-                },
-                yAxis: {
-                    min: 0,
-                    title: {
-                        text: '金额 (元)'
-                    }
-                },
-                tooltip: {
-                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y:.1f} 元</b></td></tr>',
-                    footerFormat: '</table>',
-                    shared: true,
-                    useHTML: true
-                },
-                plotOptions: {
-                    column: {
-                        pointPadding: 0.2,
-                        borderWidth: 0
-                    }
-                },
-                series:  data
+        <script src="js/highcharts-exporting.js"></script>
+        <style type="text/css">
+        ${demo.css}
+        </style>
+        <script type="text/javascript">
+            $(function () {
+
             });
-         });
-        });
-    </script>
-</body>
+        </script>
+    </head>
+    <body>
+
+
+
+    </body>
 </html>

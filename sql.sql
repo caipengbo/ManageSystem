@@ -70,3 +70,15 @@ select sum(sale_money) from tb_sale where stime>"2016-10-25 00:00:00" and stime<
 select month(stime),sum(ccost * snum) from tb_commodity,tb_sale,tb_saledetails 
 where tb_commodity.cid=tb_saledetails.cid  
 and tb_saledetails.sid=tb_sale.sid and year(stime)='2016'  group by month(stime)
+
+
+select  tb_type.tid,sum(snum*sale_price)/(select sum(sale_money) from tb_sale) 
+from tb_saledetails,tb_commodity,tb_type,tb_sale
+where tb_saledetails.cid=tb_commodity.cid and tb_commodity.tid=tb_type.tid 
+and tb_saledetails.sid=tb_sale.sid
+group by tb_type.tid
+
+
+select sale_money from tb_sale
+
+
