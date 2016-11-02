@@ -5,7 +5,7 @@
 
 	insert into tb_user values("123","123",1)
 	-- 账目表 isrepay=1 已经还款  =0 没还款
- 	create table tb_accounts(aid int primary key auto_increment, aitem text, aitem_money, isrepay int, atime datetime);
+ 	create table tb_accounts(aid int primary key auto_increment, aitem text, aitem_money float(10,2), isrepay int, atime datetime);
 	-- 商品类型表 tid 1:香烟 2白酒 3红酒 4啤酒 5饮料
 	create table tb_type(tid int primary key, tname varchar(10), small_unit varchar(4), big_unit varchar(4));
 	$sql = "insert into tb_type values(1,'香烟','盒','条')";
@@ -28,18 +28,18 @@
 	create table tb_destroy(did int primary key auto_increment,cid int,dnum int,statement text,foreign key(cid) references tb_commodity(cid));
 
 	-- 销售表 
+	create table tb_sale(sid varchar(20) primary key,sale_money float(10,2),get_money float(10,2),itemnum int,username varchar(15),
+		stime datetime,foreign key(username) references tb_user(username));
+	create table tb_saledetails(sid varchar(20),cid int,snum int,sale_price float(8,2),foreign key(sid) references tb_sale(sid),foreign key(cid) references tb_commodity(cid));
 	
+	-- 
 
 	-- 查询
 	--查询商品信息
 	select cname as text,tname,small_unit,cnum,ccost,csticker_price from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid;
 
 	-- 销售表——新
-	create table tb_sale(sid varchar(20) primary key,sale_money float(10,2),get_money float(10,2),itemnum int,username varchar(15),
-		stime datetime,foreign key(username) references tb_user(username));
-	create table tb_saledetails(sid varchar(20),cid int,snum int,sale_price float(8,2),foreign key(sid) references tb_sale(sid),foreign key(cid) references tb_commodity(cid));
-	
-		  |    1350.00 |   2000.00 |       2 | 123      | 2016-10-17 21:55:06
+	 
 	
 		insert into tb_sale values("sale160517215505",222,300,2,"username","2016-5-17 21:55:06")
 			insert into tb_sale values("sale160617215505",222,300,2,"username","2016-6-17 21:55:06")
