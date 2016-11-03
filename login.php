@@ -37,7 +37,7 @@
 					<!-- Site logo -->
 					<div class="row header_top">
 						<div class="col-md-12 col-sm-12 col-xs-12 logo_div">
-							<font style="font-size:30px;color:white">华名烟酒店管理系统V1.0</font>
+							<span class="display_brand">华名烟酒店管理系统 1.0</span>
 							<!-- <img src="img/1.png" alt="logo"/> -->
 						</div>
 					</div><!-- End Logo -->
@@ -47,16 +47,32 @@
 
 						</div>
 						<div class="col-md-4 ">
-							<form style="padding:10%">
-									<div class="form-group  wow fadeInLeft" data-wow-delay=".2s">
+							<form class="login-form"  action="login/loginController.php" method="post" >
+									<div class="form-group  wow fadeInLeft inner-addon left-addon" data-wow-delay=".2s">
+										<i class="glyphicon glyphicon-user"></i>
 										<input value="" type="text" class="form-control" id="fast-name" placeholder="用户名">
 									</div>
-									<div class="form-group wow fadeInLeft" data-wow-delay=".2s">
+									<div class="form-group wow fadeInLeft inner-addon left-addon" data-wow-delay=".2s">
+										<i class="glyphicon glyphicon-lock"></i>
 										<input value="" type="password" class="form-control" id="fast-name" placeholder="密码">
 									</div>
 									<div class="form-group  wow fadeInLeft" data-wow-delay=".2s">
-										<span><input value="" type="text" class="form-control" id="fast-name" style="width:40%;display:inline" placeholder="验证码">
+										<span><input name="validate" type="text" class="form-control" id="fast-name" style="width:40%;display:inline" placeholder="验证码">
 										<img  title="点击刷新" src="login/captcha/create.php" align="absbottom" onclick="this.src='login/captcha/create.php?'+Math.random();" style="width:50%;max-height:80%;padding: 5%;"></img></span>
+										<span class="login_hint">
+											<!-- hint -->
+											<?php
+							                //通过返回的$_GET["errno"]
+							                  $errno = "";
+							                  if ( isset($_GET["errno"]) ) {
+							                    $errno = $_GET["errno"];
+							                    if ($errno == 0) 
+							                      echo "验证码错误！";
+							                    else 
+							                      echo "用户名或密码错误";
+							                  }
+							                ?>
+										</span>
 									</div>
 									<div class="form-group  wow fadeInLeft" data-wow-delay=".2s">
 										<button type="button" class="btn btn-primary" style="width:100%">登录</button>
@@ -73,12 +89,12 @@
 				<div class="carousel-caption overlay">
 				</div>
 			</div>
-			<div class="item">
-				<div class="fill" style="background-image:url('login/img/2.jpg');"></div>
+			<!--<div class="item">
+				<div class="fill" style="background-image:url('login/img/7.jpg');"></div>
 				<div class="carousel-caption overlay">
 				</div>
 			</div>
-			<div class="item">
+			 <div class="item">
 				<div class="fill" style="background-image:url('login/img/3.jpg');"></div>
 				<div class="carousel-caption overlay">
 				</div>
@@ -87,7 +103,7 @@
 				<div class="fill" style="background-image:url('login/img/4.jpg');"></div>
 				<div class="carousel-caption overlay">
 				</div>
-			</div>
+			</div> -->
 		</div>
 	</header>
 	<!-- 页脚 -->
