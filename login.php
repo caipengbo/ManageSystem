@@ -47,35 +47,24 @@
 
 						</div>
 						<div class="col-md-4 ">
-							<form class="login-form"  action="login/loginController.php" method="post" >
+							<form class="login-form" method="post">
 									<div class="form-group  wow fadeInLeft inner-addon left-addon" data-wow-delay=".2s">
 										<i class="glyphicon glyphicon-user"></i>
-										<input value="" type="text" class="form-control" id="fast-name" placeholder="用户名">
+										<input name="username" type="text" class="form-control" placeholder="用户名">
 									</div>
 									<div class="form-group wow fadeInLeft inner-addon left-addon" data-wow-delay=".2s">
 										<i class="glyphicon glyphicon-lock"></i>
-										<input value="" type="password" class="form-control" id="fast-name" placeholder="密码">
+										<input name="password" type="password" class="form-control" placeholder="密码">
 									</div>
 									<div class="form-group  wow fadeInLeft" data-wow-delay=".2s">
-										<span><input name="validate" type="text" class="form-control" id="fast-name" style="width:40%;display:inline" placeholder="验证码">
+										<span><input name="validate" type="text" class="form-control" id="" style="width:40%;display:inline" placeholder="验证码">
 										<img  title="点击刷新" src="login/captcha/create.php" align="absbottom" onclick="this.src='login/captcha/create.php?'+Math.random();" style="width:50%;max-height:80%;padding: 5%;"></img></span>
 										<span class="login_hint">
 											<!-- hint -->
-											<?php
-							                //通过返回的$_GET["errno"]
-							                  $errno = "";
-							                  if ( isset($_GET["errno"]) ) {
-							                    $errno = $_GET["errno"];
-							                    if ($errno == 0) 
-							                      echo "验证码错误！";
-							                    else 
-							                      echo "用户名或密码错误";
-							                  }
-							                ?>
 										</span>
 									</div>
 									<div class="form-group  wow fadeInLeft" data-wow-delay=".2s">
-										<button type="button" class="btn btn-primary" style="width:100%">登录</button>
+										<button type="button" onclick="submitForm()" class="btn btn-primary" style="width:100%">登录</button>
 									</div>
 							</form>	
 						</div>
@@ -117,6 +106,7 @@
 		</div>
 	</footer>
 	<script src="login/js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
 	<script src="login/js/bootstrap.min.js"></script>
 	<script src="login/js/jPushMenu.js"></script>
 	<script src="login/js/owl.carousel.js"></script>
@@ -125,5 +115,26 @@
 	<script src="login/js/wow.min.js"></script>
 	<script src="login/js/plugins.js"></script>
 	<script src="login/js/main.js"></script>
+	<script>
+		function submitForm() {
+			$('.login-form').form('submit',{
+				url:"login/loginController.php",
+				success:function(data){
+					if (data == 0) {
+                    	$('.login_hint').html("验证码错误!");
+                    } else if(data == 2) {
+                    	$('.login_hint').html("密码错误！");
+                    } else if(data == 3) {
+                    	$('.login_hint').html("用户名不存在");
+                    } else if(data == 4) {
+                    	$('.login_hint').html("请输入验证码！");
+                    } else if(data == 5) {
+                    	window.location.href="index.html";
+                    } 
+				}
+			});
+			
+		}
+	</script>
 </body>
 </html>
