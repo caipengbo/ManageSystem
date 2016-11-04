@@ -1,9 +1,9 @@
 	use db_managesystem
 	show tables
-	-- 用户表 flag=1:店长   =0 店员
-	create table tb_user(username varchar(15) primary key,password varchar(64),flag int not null);
+	-- 用户表 flag=1:店长   =2 店员  3游客 权限
+	create table tb_user(username varchar(15) primary key,password varchar(64),name varchar(20),,flag int not null);
 
-	insert into tb_user values("123","123",1)
+	insert into tb_user values("123","123","myth",1,);
 	-- 账目表 isrepay=1 已经还款  =0 没还款
  	create table tb_accounts(aid int primary key auto_increment, aitem text, aitem_money float(10,2), isrepay int, atime datetime);
 	-- 商品类型表 tid 1:香烟 2白酒 3红酒 4啤酒 5饮料

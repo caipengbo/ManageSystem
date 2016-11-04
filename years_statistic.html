@@ -12,7 +12,17 @@
 	<script src="js/highcharts-3d.js"></script>
 	<script src="js/highcharts-exporting.js"></script>
 </head>
-<body>
+<body>	
+	<div style="margin-bottom:5px">
+		<select id="year_combobox" class="easyui-combobox" name="" style="width:100px;">
+	    <option value="2016">2016</option>
+	    <option value="2015">2015</option>
+	    <option value="2014">2014</option>
+	    <option value="2013">2013</option>
+	    <option value="2012">2012</option>
+		</select>
+	</div>
+	
 	<div id="tab" class="easyui-tabs" style="width:1000px;height:500px"
 	 data-options="pill:true,justified:true">
 		<div title="销售走势图" style="padding:10px">
@@ -26,18 +36,30 @@
 		</div>
 	</div>
 <script>
+	var selectedYear;
+	$('#year_combobox').combobox({
+				onSelect: function(data){
+					selectedYear = data.value;
+					showThreeFigures(selectedYear); 
+				}
+			});
+	function showThreeFigures(year) {
+		yearTrend(year);
+		monthStatistic(year);
+		yearPercentage(year);
+	}
 	// years trend charts begin
-	$(function () {
-		$.getJSON('data1.php?callback=?', function (data) {
+	function yearTrend(year) {
+		$.getJSON('statisticdata/yeardata1.php?callback=?', function (data) {
 			$('#years_trend').highcharts({
 				chart: {
 					zoomType: 'x'
 				},
 				title: {
-					text: '、、、、年销售趋势'
+					text: year+'全年销售趋势'
 				},
 				subtitle: {
-					text: '——华名烟酒店'
+					text: '华名烟酒店'
 				},
 				xAxis: {
 					type: 'date',
@@ -88,19 +110,19 @@
 				}]
 			});
 		});
-	}); // years trend charts end
+	} // years trend charts end
 	// monthly_statistic begin
-        $(function () {
-            $.getJSON('data2.php', function (data) {
+	function monthStatistic(year) {
+		 $.getJSON('statisticdata/yeardata2.php', function (data) {
              $('#monthly_statistic').highcharts({
                 chart: {
                     type: 'column'
                 },
                 title: {
-                    text: '每月销售统计'
+                    text: year+'年各月销售统计'
                 },
                 subtitle: {
-                    text: '华名烟酒'
+                    text: '华名烟酒店'
                 },
                 xAxis: {
                     categories: [
@@ -132,10 +154,10 @@
                 series:  data
             });
          });
-        }); // monthly_statistic end
+	} // monthly_statistic end
     //  years percentage begin
-    $(function () {
-    $.getJSON('data3.php', function (data) {
+    function yearPercentage(year) {
+    	 $.getJSON('statisticdata/yeardata3.php', function (data) {
                  $('#years_percentage').highcharts({
                     chart: {
                         type: 'pie',
@@ -146,8 +168,11 @@
                         }
                     },
                     title: {
-                        text: '各类商品销售额比例'
+                        text: year+'年各类商品销售额比例'
                     },
+                    subtitle: {
+                    text: '华名烟酒店'
+            	   },
                     tooltip: {
                         pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
                     },
@@ -169,7 +194,7 @@
                     }]
                 });
              }); 
-	}); // years percentage end
+    }// years percentage end
 	</script>
 </body>
 	
