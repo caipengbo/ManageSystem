@@ -13,43 +13,7 @@
         ${demo.css}
         </style>
         <script type="text/javascript">
-        $.getJSON('statisticdata/monthdata1.php', function (data) {
-            $('#container').highcharts({
-        title: {
-            text: '****年**月销售统计',
-            x: -20 //center
-        },
-        subtitle: {
-            text: '华名烟酒',
-            x: -20
-        },
-        xAxis: {
-            categories: ['1', '2', '3', '4', '5', '6',
-                '7', '8', '9', '10', '11', '12','13','14','15','16', '17', '18', '19', '20', '21',
-                '22', '23', '24', '25', '26', '27','28','29','30','31']
-        },
-        yAxis: {
-            title: {
-                text: '金额'
-            },
-            plotLines: [{
-                value: 0,
-                width: 1,
-                color: '#808080'
-            }]
-        },
-        tooltip: {
-            valueSuffix: '元'
-        },
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            borderWidth: 0
-        },
-        series: data
-    });
-        });
+      
     
 
         </script>

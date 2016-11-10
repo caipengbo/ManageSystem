@@ -16,7 +16,7 @@ class UseMysql {
     }
   }
 
-  //执行查询语句  返回json数组（可以立马关闭结果集资源）完善的时候添加返回值！！！！！
+  //执行查询语句  返回json数组（可以立马关闭结果集资源
   public function execute_dql($sql) {
     $arr = array();
     $result = mysqli_query($this->connect,$sql) or die(mysqli_error($this->connect));
@@ -24,11 +24,6 @@ class UseMysql {
     while ( $row = mysqli_fetch_array($result,MYSQL_ASSOC)) {
       $arr[$i++] = $row;
       }
-    /*  if ( !empty($result) ) {
-            while ( $row = mysqli_fetch_array($result,MYSQL_ASSOC)) {
-                echo $row['id'] . " " . $row['name'] . " " . $row['password'] . "<br>";
-            }
-          } */
     mysqli_free_result($result);
     return json_encode($arr);
   }

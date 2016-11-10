@@ -1,4 +1,5 @@
 <?php
+	//各月柱形图 
 	require "../model/Statistic.class.php";
 	function convert($arr)
 	{

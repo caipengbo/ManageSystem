@@ -1,4 +1,5 @@
 <?php
+	//饼形图 
 	require "../model/Statistic.class.php";
 	$S = new Statistic();
 	$res = $S->getYearsPecentage('2016');

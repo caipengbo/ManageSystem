@@ -76,7 +76,7 @@
 			</div>
 			<div title="统计" data-options="iconCls:'icon-large-chart'" style="padding:0px;">
 				<li><a href="javascript:addTab('年销售统计','years_statistic.html')">年销售统计</a></li>
-				<li><a href="javascript:addTab('月销售统计','month_statistic.html')">月销售统计</a></li>
+				<li><a href="javascript:addTab('月销售统计','monthly_statistic.html')">月销售统计</a></li>
 				<li><a href="javascript:addTab('日销售统计','day_statistic.html')">日销售统计</a></li>
 			</div>
 			<div title="账目管理" data-options="iconCls:'icon-accounts'" style="padding:0px;">

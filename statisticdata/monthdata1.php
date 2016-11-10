@@ -1,5 +1,8 @@
 <?php
 	require "../model/Statistic.class.php";
+	date_default_timezone_set('PRC');
+	$year = isset($_GET['year'])? $_GET['year'] : date('Y');
+	$month = isset($_GET['month'])? $_GET['month'] : date('m');
 	function convert($arr)
 	{
 		$res = array();
@@ -17,11 +20,11 @@
 	$result[0]['name'] = "销售";
 	$result[1]['name'] = "成本";
 	$result[2]['name'] = "利润";
-	$res = $S->getSaleMoney_day('2016','10');
+	$res = $S->getSaleMoney_day($year,$month);
 	// var_dump($res);
 	$data_arr1 = convert($res);
 	$result[0]['data'] = $data_arr1;
-	$res = $S->getCost_day('2016','10');
+	$res = $S->getCost_day($year,$month);
 	$data_arr2 = convert($res);
 	$result[1]['data'] = $data_arr2;
 	for ($i=0; $i < 31; $i++) { 
