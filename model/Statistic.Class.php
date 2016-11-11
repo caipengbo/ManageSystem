@@ -82,5 +82,27 @@
 		 	$db->close();
 		 	return $res;
 		}
+
+		public function getSaleMoney_hour($year,$month,$day) {
+			$db = new UseMysql();
+			$result =array();
+		 	$sql = "select hour(stime),sum(sale_money) from tb_sale  where year(stime)='$year' and month(stime)='$month' and day(stime)='$day'
+		 	group by hour(stime) order by hour(stime) asc";
+		 	$res = $db->execute_dql_3($sql,true);
+		 	$db->close();
+		 	return $res;
+		}
+		public function getCost_hour($year,$month,$day) {
+			$db = new UseMysql();
+			$result =array();
+		 	$sql = "select hour(stime),sum(ccost * snum) from tb_commodity,tb_sale,tb_saledetails 
+			where tb_commodity.cid=tb_saledetails.cid  and tb_saledetails.sid=tb_sale.sid 
+			and year(stime)='$year' and month(stime)='$month' and day(stime)='$day'
+			 group by hour(stime) order by hour(stime) asc";
+		 	$res = $db->execute_dql_3($sql,true);
+		 	$db->close();
+		 	return $res;
+		}
+
 	}
 ?>
