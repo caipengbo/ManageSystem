@@ -37,6 +37,10 @@
 	</div>
 <script>
 	var selectedYear;
+	//三个highcharts表对象
+	var chart_yearTrend;
+	var chart_monthStatistic;
+	var chart_yearPercentage;
 	$('#year_combobox').combobox({
 				onSelect: function(data){
 					selectedYear = data.value;
@@ -50,8 +54,7 @@
 	}
 	// years trend charts begin
 	function yearTrend(year) {
-		$.getJSON('statisticdata/yeardata1.php?year='+year+'&callback=?', function (data) {
-			$('#years_trend').highcharts({
+		 chart_yearTrend = Highcharts.chart('years_trend',{
 				chart: {
 					zoomType: 'x'
 				},
@@ -101,17 +104,19 @@
 						},
 						threshold: null
 					}
-				},
-
-				series: [{
-					type: 'area',
-					name: '销售额',
-					data:  data
-				}]
+				}
 			});
+		chart_yearTrend.showLoading("加载中...");
+		$.getJSON('statisticdata/yeardata1.php?year='+year+'&callback=?', function (data) {
+			chart_yearTrend.addSeries({
+				type: 'area',
+				name: '销售额',
+				data:  data
+            });
+            chart_yearTrend.hideLoading();
 		});
 	} // years trend charts end
-	// monthly_statistic begin
+		// monthly_statistic begin
 	function monthStatistic(year) {
 		 $.getJSON('statisticdata/yeardata2.php?year='+year, function (data) {
              $('#monthly_statistic').highcharts({
@@ -157,9 +162,8 @@
 	} // monthly_statistic end
     //  years percentage begin
     function yearPercentage(year) {
-    	 $.getJSON('statisticdata/yeardata3.php?year='+year, function (data) {
-                 $('#years_percentage').highcharts({
-                    chart: {
+    	chart_yearPercentage = Highcharts.chart('years_percentage',{
+    		 chart: {
                         type: 'pie',
                         options3d: {
                             enabled: true,
@@ -186,14 +190,17 @@
                                 format: '{point.name}'
                             }
                         }
-                    },
-                    series: [{
-                        type: 'pie',
-                        name: '销售额',
-                        data: data
-                    }]
-                });
-             }); 
+                    }
+    	});
+    	chart_yearPercentage.showLoading("加载中...");
+    	$.getJSON('statisticdata/yeardata3.php?year='+year, function (data) {
+             chart_yearPercentage.addSeries({
+                type: 'pie',
+                name: '销售额',
+                data: data
+             });
+             chart_yearPercentage.hideLoading();
+        }); 
     }// years percentage end
 	</script>
 </body>

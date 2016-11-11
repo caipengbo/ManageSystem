@@ -1,26 +1,205 @@
-
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>图形测试页面</title>
-
-        <script type="text/javascript" src="js/jquery.min.js"></script>
-        <script src="js/highcharts.js"></script>
-
-        <script src="js/highcharts-exporting.js"></script>
-        <style type="text/css">
-        ${demo.css}
-        </style>
-        <script type="text/javascript">
-      
+<head>
+    <title>图表测试</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="css/easyui.css">
+    <link rel="stylesheet" type="text/css" href="css/icon.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
+    <script src="js/highcharts.js"></script>
+    <script src="js/highcharts-3d.js"></script>
+    <script src="js/highcharts-exporting.js"></script>
+</head>
+<body>  
+    <div style="margin-bottom:5px">
+        <select id="year_combobox" class="easyui-combobox" name="" style="width:100px;">
+        <option value="2016">2016</option>
+        <option value="2015">2015</option>
+        <option value="2014">2014</option>
+        <option value="2013">2013</option>
+        <option value="2012">2012</option>
+        </select>
+    </div>
     
+    <div id="tab" class="easyui-tabs" style="width:1000px;height:500px"
+     data-options="pill:true,justified:true">
+        <div title="销售走势图" style="padding:10px">
+            <div id="years_trend" style="min-width: 800px; height: 400px; margin: 0 auto"></div>
+        </div>
+        <div title="各月统计图" style="padding:10px">
+            <div id="monthly_statistic" style="min-width: 980px; height: 400px; margin: 0 auto"></div>
+        </div>
+        <div title="销售比例图" style="padding:10px">
+            <div id="years_percentage" style="min-width: 980px;height: 400px"></div>
+        </div>
+    </div>
+<script>
+    var selectedYear;
+    $('#year_combobox').combobox({
+                onSelect: function(data){
+                    selectedYear = data.value;
+                    showThreeFigures(selectedYear); 
+                }
+            });
+    function showThreeFigures(year) {
+        yearTrend(year);
+        monthStatistic(year);
+        yearPercentage(year);
+    }
+    // years trend charts begin
+    var chart_yearTrend;
+    function yearTrend(year) {
+         chart_yearTrend = Highcharts.chart('years_trend', {
+                chart: {
+                    zoomType: 'x'
+                },
+                title: {
+                    text: year+'全年销售趋势'
+                },
+                subtitle: {
+                    text: '华名烟酒店'
+                },
+                xAxis: {
+                    type: 'date',
+                    title: {
+                        text: '时间（天）'
+                    }
+                },
+                yAxis: {
+                    min : 0,
+                    title: {
+                        text: '销售额 (元)'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    area: {
+                        fillColor: {
+                            linearGradient: {
+                                x1: 0,
+                                y1: 0,
+                                x2: 0,
+                                y2: 1
+                            },
+                            stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                            ]
+                        },
+                        marker: {
+                            radius: 2
+                        },
+                        lineWidth: 1,
+                        states: {
+                            hover: {
+                                lineWidth: 1
+                            }
+                        },
+                        threshold: null
+                    }
+                },
+            });
+         chart_yearTrend.showLoading("加载中...");
+         $.getJSON('statisticdata/yeardata1.php?year='+year+'&callback=?', function (data) {
+            chart_yearTrend.addSeries({
+            type: 'area',
+            name: '销售额',
+            data:  data
+            });
+            chart_yearTrend.hideLoading();
+        });
+    } // years trend charts end
+    // monthly_statistic begin
+    function monthStatistic(year) {
+         $.getJSON('statisticdata/yeardata2.php?year='+year, function (data) {
+             $('#monthly_statistic').highcharts({
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: year+'年各月销售统计'
+                },
+                subtitle: {
+                    text: '华名烟酒店'
+                },
+                xAxis: {
+                    categories: [
+                    '一月','二月','三月','四月','五月','六月',
+                    '七月','八月', '九月','十月','十一月', '十二月'
+                    ],
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '金额 (元)'
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.1f} 元</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series:  data
+            });
+         });
 
-        </script>
-    </head>
-    <body>
-
-
-<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-    </body>
+         
+    } // monthly_statistic end
+    //  years percentage begin
+    function yearPercentage(year) {
+         $.getJSON('statisticdata/yeardata3.php?year='+year, function (data) {
+                 $('#years_percentage').highcharts({
+                    chart: {
+                        type: 'pie',
+                        options3d: {
+                            enabled: true,
+                            alpha: 45,
+                            beta: 0
+                        }
+                    },
+                    title: {
+                        text: year+'年各类商品销售额比例'
+                    },
+                    subtitle: {
+                    text: '华名烟酒店'
+                   },
+                    tooltip: {
+                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            depth: 35,
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.name}'
+                            }
+                        }
+                    },
+                    series: [{
+                        type: 'pie',
+                        name: '销售额',
+                        data: data
+                    }]
+                });
+             }); 
+    }// years percentage end
+    </script>
+</body>
+    
 </html>

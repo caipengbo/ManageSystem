@@ -69,8 +69,8 @@
 	function monthTrend(year,month) {
 		$.getJSON('statisticdata/monthdata1.php?year='+year+'&month='+month, function (data) {
 			$('#month_trend').highcharts({
-				title: {
-					text: year+'年'+month+'月销售统计',
+		title: {
+			text: year+'年'+month+'月销售统计',
             x: -20 //center
         },
         subtitle: {
@@ -102,7 +102,7 @@
         },
         series: data
     });
-		});
+	});
 	} // month trend charts end
 
     //  month percentage begin
