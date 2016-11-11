@@ -50,7 +50,7 @@
 	}
 	// years trend charts begin
 	function yearTrend(year) {
-		$.getJSON('statisticdata/yeardata1.php?callback=?', function (data) {
+		$.getJSON('statisticdata/yeardata1.php?year='+year+'&callback=?', function (data) {
 			$('#years_trend').highcharts({
 				chart: {
 					zoomType: 'x'
@@ -113,7 +113,7 @@
 	} // years trend charts end
 	// monthly_statistic begin
 	function monthStatistic(year) {
-		 $.getJSON('statisticdata/yeardata2.php', function (data) {
+		 $.getJSON('statisticdata/yeardata2.php?year='+year, function (data) {
              $('#monthly_statistic').highcharts({
                 chart: {
                     type: 'column'
@@ -157,7 +157,7 @@
 	} // monthly_statistic end
     //  years percentage begin
     function yearPercentage(year) {
-    	 $.getJSON('statisticdata/yeardata3.php', function (data) {
+    	 $.getJSON('statisticdata/yeardata3.php?year='+year, function (data) {
                  $('#years_percentage').highcharts({
                     chart: {
                         type: 'pie',

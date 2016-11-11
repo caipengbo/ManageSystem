@@ -1,4 +1,5 @@
 <?php
+	//月统计 折线图（31天）
 	require "../model/Statistic.class.php";
 	date_default_timezone_set('PRC');
 	$year = isset($_GET['year'])? $_GET['year'] : date('Y');

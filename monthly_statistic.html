@@ -107,7 +107,7 @@
 
     //  month percentage begin
     function monthPercentage(year,month) {
-    	 $.getJSON('statisticdata/monthdata2.php', function (data) {
+    	 $.getJSON('statisticdata/monthdata2.php?year='+year+'&month='+month, function (data) {
                  $('#month_percentage').highcharts({
                     chart: {
                         type: 'pie',

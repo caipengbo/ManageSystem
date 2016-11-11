@@ -1,6 +1,8 @@
 <?php
 	//各月柱形图 
 	require "../model/Statistic.class.php";
+	date_default_timezone_set('PRC');
+	$year = isset($_GET['year'])? $_GET['year'] : date('Y');
 	function convert($arr)
 	{
 		$res = array(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
@@ -15,11 +17,11 @@
 	$result[0]['name'] = "销售";
 	$result[1]['name'] = "成本";
 	$result[2]['name'] = "利润";
-	$res = $S->getSaleMoney('2016');
+	$res = $S->getSaleMoney($year);
 	// var_dump($res);
 	$data_arr1 = convert($res);
 	$result[0]['data'] = $data_arr1;
-	$res = $S->getCost('2016');
+	$res = $S->getCost($year);
 	$data_arr2 = convert($res);
 	$result[1]['data'] = $data_arr2;
 	for ($i=0; $i < 12; $i++) { 
