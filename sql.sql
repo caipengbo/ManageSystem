@@ -6,6 +6,12 @@
 	insert into tb_user values("123","123","myth",1,);
 	-- 账目表 isrepay=1 已经还款  =0 没还款
  	create table tb_accounts(aid int primary key auto_increment, aitem text, aitem_money float(10,2), isrepay int, atime datetime);
+	insert into tb_accounts(aitem, aitem_money, isrepay, atime) 
+	values("Myth owe some Money",100.0,0,now())
+	insert into tb_accounts(aitem, aitem_money, isrepay, atime) 
+	values("Myth2 owe some Money",200.0,0,now())
+	insert into tb_accounts(aitem, aitem_money, isrepay, atime) 
+	values("Myth4 owe some Money，but return",300.0,1,now())
 	-- 商品类型表 tid 1:香烟 2白酒 3红酒 4啤酒 5饮料
 	create table tb_type(tid int primary key, tname varchar(10), small_unit varchar(4), big_unit varchar(4));
 	$sql = "insert into tb_type values(1,'香烟','盒','条')";
@@ -32,7 +38,7 @@
 		stime datetime,foreign key(username) references tb_user(username));
 	create table tb_saledetails(sid varchar(20),cid int,snum int,sale_price float(8,2),foreign key(sid) references tb_sale(sid),foreign key(cid) references tb_commodity(cid));
 	
-	-- 
+	
 
 	-- 查询
 	--查询商品信息

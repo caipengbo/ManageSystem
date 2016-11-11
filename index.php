@@ -80,8 +80,8 @@
 				<li><a href="javascript:addTab('日销售统计','day_statistic.html')">日销售统计</a></li>
 			</div>
 			<div title="账目管理" data-options="iconCls:'icon-accounts'" style="padding:0px;">
-				<li><a href="javascript:addTab('账目一览','account_view.html')">账目一览</a></li>
-				<li><a href="javascript:addTab('账目修改','account_modify.html')">账目修改</a></li>
+				<li><a href="javascript:addTab('账目管理','account_manage.html')">账目管理</a></li>
+				<li><a href="javascript:addTab('账目查看','account_view.html')">账目查看</a></li>
 			</div>
 			<div title="系统管理" data-options="iconCls:'icon-setting'"">
 				<li><a href="javascript:addTab('个人设置','')">个人设置</a></li>
