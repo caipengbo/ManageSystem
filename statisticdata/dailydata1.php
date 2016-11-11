@@ -8,7 +8,7 @@
 	function convert($arr)
 	{
 		$res = array();
-		for ($i=0; $i < 23; $i++) { 
+		for ($i=0; $i < 24; $i++) { 
 			$res[$i] = 0.0;
 		}
 		for ($i=0; $i < count($arr); $i++) { 
@@ -29,7 +29,7 @@
 	$res = $S->getCost_hour($year,$month,$day);
 	$data_arr2 = convert($res);
 	$result[1]['data'] = $data_arr2;
-	for ($i=0; $i < 23; $i++) { 
+	for ($i=0; $i < 24; $i++) { 
 		$data_arr3[$i] = $data_arr1[$i] - $data_arr2[$i];
 	}
 	$result[2]['data'] = $data_arr3;

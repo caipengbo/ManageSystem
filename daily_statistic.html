@@ -28,7 +28,7 @@
 		</div>
 	</div>
 <script>
-    //打开页面默认当前时间
+    //打开页面默认显示当前时间
     $(document).ready(
         function(){
             var d = new Date();
@@ -38,7 +38,7 @@
              showTwoFigures(loc_dt.substring(0,4),loc_dt.substring(5,7),loc_dt.substring(8,10));
              $('#statistic_date').datebox({
               onSelect: function(date){
-                 showTwoFigures(date.getFullYear(),date.getMonth(),date.getDate());
+                 showTwoFigures(date.getFullYear(),date.getMonth()+1,date.getDate());
                 }
               });
          }

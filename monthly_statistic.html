@@ -41,9 +41,10 @@
 		</div>
 	</div>
 <script>
-	var d = new Date();
- 	$('#year_combobox').val(d.getFullYear());
- 	$('#month_combobox').val(d.getMonth());
+    var d = new Date();
+    var loc_dt = d.toLocaleDateString();
+ 	$('#year_combobox').val(loc_dt.substring(0,4));
+ 	$('#month_combobox').val(loc_dt.substring(5,7));
 	var selectedYear;
 	var selectedMonth;
 	$('#year_combobox').combobox({

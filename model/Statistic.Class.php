@@ -104,5 +104,20 @@
 		 	return $res;
 		}
 
+		public function getDailyPecentage($year,$month,$day) {
+			$db = new UseMysql();
+			$result =array();
+		 	$sql = "select tb_type.tid,sum(snum*sale_price)/(select sum(sale_money) from tb_sale 	
+		 			where year(stime)='$year' and month(stime)='$month' 
+		 			and day(stime)='$day') 
+					from tb_saledetails,tb_commodity,tb_type,tb_sale
+					where tb_saledetails.cid=tb_commodity.cid and tb_commodity.tid=tb_type.tid 
+					and tb_saledetails.sid=tb_sale.sid and year(stime)='$year' 
+					and month(stime)='$month' and day(stime)='$day' group by tb_type.tid";
+		 	$res = $db->execute_dql_3($sql,true);
+		 	$db->close();
+		 	return $res;
+		}
+
 	}
 ?>
