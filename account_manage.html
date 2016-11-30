@@ -5,9 +5,12 @@
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="css/easyui.css">
 	<link rel="stylesheet" type="text/css" href="css/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/app.css">
+	<link rel="stylesheet" type="text/css" href="css/sweetalert2.min.css">
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="js/sweetalert2.min.js"></script>
 </head>
 <body>
 	<div class="easyui-panel" id="view_position_2">
@@ -26,59 +29,66 @@
 		rownumbers:true	,
 		singleSelect:true,
 		striped:true,
-		pagination:true
+		pagination:true,
+		sortName:'atime',
+		sortOrder:'desc'
 		">
 		<thead>
 			<tr>
 				<th field="aid" width="80" hidden=true>隐藏</th>
 				<th field="aitem"  width="80">账目记录</th>
-				<th field="aitem_money" width="50">记录金额</th>
+				<th field="aitem_money" width="50" sortable="true">记录金额</th>
 				<th data-options="field:'isrepay',width:'50', formatter:format">是否归还</th>
-				<th field="atime"  width="60">记录时间</th>
+				<th field="atime"  width="60" sortable="true">记录时间</th>
 			</tr>
 		</thead>
 		</table>
 		<div id="toolbar">
-			<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="popDlg()">增加</a>
-			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="popDlg()">修改</a>
-			<a href="#" class="easyui-linkbutton" iconCls="icon-no" plain="true" onclick="deleteCommodity()">删除</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="popAddDlg()">增加</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="popModifyDlg()">更改</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-no" plain="true" onclick="deleteAccount()">删除</a>
 		</div>
 		</div> <!-- account_manage div end -->
-		<!-- 对话框 -->
-		<div id="dlg" class="easyui-dialog" style="width:400px;height:298px;padding:10px 20px"
-		closed="true" buttons="#dlg-buttons">
-		<form id="update_commodity" method="post" action="">
+		<!-- 添加对话框 -->
+		<div id="adddlg" class="easyui-dialog" style="width:400px;height:298px;padding:10px 20px"
+		closed="true" buttons="#adddlg-buttons">
+		<form id="add_account" method="post" action="">
 			<div class="dlg_body">
 				<div>		
-					<span><font>名称：</font></span>
-					<span><input class="easyui-textbox" name="cname" data-options="" style="width:150px"></span>
-				</div>
-				<div>		
-					<span>类别：</span>
-					<span><input class="easyui-textbox" name="tname" data-options="disabled:true" style="width:150px"></span>
+					<span><input class="easyui-textbox" name="aitem"  label="账目记录：" labelPosition="top" data-options="multiline:true" style="width:200px;height:100px"></span>
 				</div>
 				<div>
-					<span>规格：</span>
-					<span><input class="easyui-numberbox" name="cunit_value" data-options="precision:0,width:'150px'"></span>
-				</div>
-				<div>
-					<span>进价：</span>
-					<span><input class="easyui-numberbox" name="ccost" data-options="precision:2,groupSeparator:',',width:'150px'"></span>
-				</div>
-				<div>
-					<span>定价：</span>
-					<span><input class="easyui-numberbox" name="csticker_price" data-options="precision:1,groupSeparator:',',width:'150px'"></span>
-				</div>
-				<div>
-					<span>库存：</span>
-					<span><input class="easyui-numberbox" name="cnum" data-options="precision:0,width:'150px',disabled:true"></span>
+					<span><input class="easyui-numberbox"  label="账目金额：" labelPosition="left" name="aitem_money" data-options="precision:0,width:'185px'" required=true></span>
 				</div>
 			</div>
 		</form>
-		</div> <!--  对话框结束-->
-		<div id="dlg-buttons">
-			<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="updateCommodity()">修改</a>
-			<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
+		</div> <!--  添加对话框结束-->
+		<div id="adddlg-buttons">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="addAccount()">添加</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#adddlg').dialog('close')">取消</a>
+		</div>
+		<!-- 修改对话框 -->
+		<div id="modifydlg" class="easyui-dialog" style="width:400px;height:298px;padding:10px 20px"
+		closed="true" buttons="#modifydlg-buttons">
+		<form id="modify_account" method="post" action="">
+			<div class="dlg_body">
+				<div>
+					<input id="aid" type="hidden" name="aid">		
+					<span><input class="easyui-textbox" name="aitem"  label="账目记录：" labelPosition="top" data-options="multiline:true" style="width:200px;height:100px"></span>
+				</div>
+				<div>
+					<span><input class="easyui-numberbox"  label="账目金额：" labelPosition="left" name="aitem_money" data-options="precision:0,width:'185px'" required=true></span>
+				</div>
+				<div>
+				<input type="radio" name="isrepay" value="0">未归还</input>
+				<input type="radio" name="isrepay" value="1">已归还</input>
+				</div>
+			</div>
+		</form>
+		</div> <!-- 修改对话框结束-->
+		<div id="modifydlg-buttons">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="modifyAccount()">确认</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#modifydlg').dialog('close')">取消</a>
 		</div>
 	</div>
 	<script>
@@ -91,47 +101,93 @@
 			else
 				return "<span style='color:green'>已归还√</span>";
 		}
-		var url;
-		function popDlg(){	
-			var row = $('#data_grid').datagrid('getSelected');
-			if (row){
-				$('#dlg').dialog('open').dialog('setTitle','修改商品信息');
-				$('#update_commodity').form('load',row);
-				url = 'controller/update_commodity.php?oldcname='+row.cname;
-			}
+		function popAddDlg(){
+			$('#adddlg').dialog('open').dialog('setTitle','添加账目');
 		}
-		function updateCommodity(){
-			$('#update_commodity').form('submit',{
-				url: url,
+		function addAccount(){
+			$('#add_account').form('submit',{
+				url: "controller/add_account.php",
 				onSubmit: function(){
 					return $(this).form('validate');
 				},
 				success: function(result){
 					if (result == 1){
-						$('#dlg').dialog('close');
+						$('#adddlg').dialog('close');
 						$('#data_grid').datagrid('reload');	
-						alert("修改成功");
+						swal({
+ 							title: '账目已添加',
+  							type: 'success'
+  							});
 					} else {
-						alert("修改失败");
+						swal({
+ 							title: '添加失败',
+ 							text:'请检查库存,如不能解决\n请联系系统维护员：15947218808',
+  							type: 'error'
+  							});
 					}
 				}
 			});
 		}
-		function deleteCommodity(){
+		var url="";
+		function popModifyDlg(){
 			var row = $('#data_grid').datagrid('getSelected');
 			if (row){
-				$.messager.confirm('确认','确定删除该商品信息吗?',function(r){
-					if (r){
-						$.post('controller/delete_commodity.php',{cname:row.cname},function(result){
-							if (result == 1){
-								$('#data_grid').datagrid('reload');	// reload the user data
-								alert("商品已删除");
-							} else {
-								alert("修改失败");
-							}
-						},'json');
+				$('#modifydlg').dialog('open').dialog('setTitle','修改账目');	
+				$('#modify_account').form('load',row);
+				url = 'controller/update_account.php?aid='+row.aid;
+			}
+		}
+		function modifyAccount(){
+			$('#modify_account').form('submit',{
+				url: url,
+				onSubmit: function(){
+					return $(this).form('validate');
+				},
+				success: function(result){
+					$('#modifydlg').dialog('close');
+					if (result == 1){
+						$('#data_grid').datagrid('reload');	
+						swal({
+ 							title: '账目已更改',
+  							type: 'success'
+  							});
+					} else {
+						swal({
+ 							title: '修改失败',
+ 							text:'请检查网络,如不能解决\n请联系系统维护员：15947218808',
+  							type: 'error'
+  							});
 					}
-				});
+				}
+			});
+		}
+		function deleteAccount(){
+			var row = $('#data_grid').datagrid('getSelected');
+			if (row){
+				swal({
+					title: '确定删除该条账目吗？',
+					type: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: '删除',
+					cancelButtonText: '取消'
+				}).then(function() {				
+						$.post('controller/delete_account.php',{aid:row.aid},function(result){
+							if (result == 1){
+								$('#data_grid').datagrid('reload');	
+								swal({
+									title: '该账目已删除',
+									type: 'success'
+								});
+							} else {
+								swal({
+									title: '删除失败',
+									type: 'error'
+								});
+							}
+						},'json');					
+				})
 			}
 		}
 		function doSearch(value){

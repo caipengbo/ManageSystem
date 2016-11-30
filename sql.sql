@@ -1,4 +1,4 @@
-	use db_managesystem
+use db_managesystem
 	show tables
 	-- 用户表 flag=1:店长   =2 店员  3游客 权限
 	create table tb_user(username varchar(15) primary key,password varchar(64),name varchar(20),,flag int not null);
@@ -86,5 +86,5 @@ group by tb_type.tid
 
 
 select sale_money from tb_sale
-
-
+update tb_accounts 
+set aitem='修改',aitem_money=100,$isrepay=0 where aid=9
