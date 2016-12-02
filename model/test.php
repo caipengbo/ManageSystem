@@ -1,17 +1,14 @@
 <?php
-	// require "CommodityService.class.php";
-	// $CS = new CommodityService();
-	// $res = $CS->queryCommodityInfo_2("","","csticker_price","desc");
-	// echo $res;
-	//  require "UseMysql.class.php";
-	// $Mysql = new UseMysql();
-	// $sql = "insert into tb_type values(1,'香烟','盒','条')";
-	// $sql = "insert into tb_type values(2,'白酒','瓶','件')";
-	// $sql = "insert into tb_type values(3,'红酒','瓶','件')";
-	// $sql = "insert into tb_type values(4,'啤酒','瓶','箱')";
-	// $sql = "insert into tb_type values(5,'饮料','瓶','箱')";    
-	// $Mysql->execute_dml($sql);
-	// $Mysql->close();
-	// 生成12个数据，不存在的数据置为0
+	require "Account.class.php";
+	$isrepay = isset($_POST['isrepay']) ? mysql_real_escape_string($_POST['isrepay']) : 3;
+	$aitem = 'owe';
+	$start = isset($_POST['start']) ? mysql_real_escape_string($_POST['start']) : '';
+	$end = isset($_POST['end']) ? mysql_real_escape_string($_POST['end']) : '';
+	$sort = isset($_POST['sort']) ? strval($_POST['sort']) : 'atime';// 默认定价排序
+	$order = isset($_POST['order']) ? strval($_POST['order']) : 'desc';
+	$A = new Account();
+	$res = '';
+	$res = $A->queryAccountInfo($isrepay,$aitem,$start,$end,$sort,$order);
+	echo $res;
 	
 ?>

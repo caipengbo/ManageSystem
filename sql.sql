@@ -87,4 +87,7 @@ group by tb_type.tid
 
 select sale_money from tb_sale
 update tb_accounts 
-set aitem='修改',aitem_money=100,$isrepay=0 where aid=9
+set aitem='修改',aitem_money=100,isrepay=0 where aid=9
+
+select * from tb_accounts
+where aitem like "%owe%";

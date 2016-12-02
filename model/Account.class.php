@@ -6,13 +6,9 @@
 	class Account
 	{
 		public function __construct(){}
-		public function queryAccountInfo($isrepay,$starttime,$endtime,$sort,$order){
+		public function queryAccountInfo($aitem,$starttime,$endtime,$sort,$order){
 			$db = new UseMysql();
-			$where = "";
-			//没有isrepay条件
-			if ($isrepay!=3) {
-				$where .= "where isrepay=$isrepay";
-			}
+			$where = "where aitem like '%$aitem%'";
 			if ($starttime != "" && $endtime != "") {
 				$where .= " and atime between '$starttime' and '$endtime'";
 			} else if ($starttime != "" && $endtime == "") {
