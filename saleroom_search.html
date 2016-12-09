@@ -39,7 +39,7 @@
 	</div>
 	<script>
 		$(function(){
-			$(".loadTodayMoney").load("controller/load_today_money.php");
+			$(".loadTodayMoney").load("controller/load_salemoney.php?loadid=0");
 			$('#data_grid').datagrid({
 				url:"model/get_saleroom_datagrid.php",
 				method:'post',

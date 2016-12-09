@@ -5,55 +5,87 @@
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="css/easyui.css">
 	<link rel="stylesheet" type="text/css" href="css/icon.css">
-	<link rel="stylesheet" type="text/css" href="css/jalendar.css"/>
 	<script src="js/jquery.min.js" type="text/javascript" ></script>
 	<script src="js/jquery.easyui.min.js" type="text/javascript"></script>
-	<script type="text/javascript" src="js/jalendar.js"></script>
 </head>
 <body>
-	<div class="easyui-layout" style="width:1100px;height:460px;">
+	<div class="easyui-layout" style="width:1000px;height:440px;">
    	<div data-options="region:'west',collapsible:false" style="width:40%;">
    		<div class="easyui-layout" style="width:100%;height:100%;">
    			<div data-options="region:'north',collapsible:false" style="height:60%;">
-   				<div class="easyui-layout" style="width:100%;height:100%;">
-   					<div data-options="region:'west',collapsible:false" style="width:60%;"></div>
-   					<div data-options="region:'east',collapsible:false" style="width:40%;"></div>
-   				</div>
+   				<div class="easyui-panel" title="公告" style="width:100%;height:100%;overflow:hidden">
+					<marquee direction="up" scrollamount="2" vspace="0px" width="100%" height="100%" onmouseout="this.start()" onmouseover="this.stop()">
+                          	<ul style="font-size:25px">
+                                <li>公告公告公告公告！</li>
+                                <li>　　　　公告公告公告公告！</li>
+                                <li>公告公告公告公告！</li>
+                                <li>　　　　公告公告公告公告！</li>
+                                <li>公告公告公告公告！</li>
+                            </ul>
+                    </marquee>
+				</div>
    			</div>
-   			<div data-options="region:'south',collapsible:false" style="height:40%;"></div>
+   			<div data-options="region:'south',collapsible:false" style="height:40%;">
+					<ul class="easyui-datalist" title="销售一览" lines="true" style="width:100%;height:100%">
+						<li>今日销售：<span id="show_today_sale"></span></li>
+						<li>昨日销售：<span id="show_yesterday_sale"></span></li>
+						<li>本月销售：<span id="show_month_sale"></span></li>
+					</ul>
+   			</div>
    		</div>
    	</div>
     <div data-options="region:'east',collapsible:false" style="width:60%;background:#eee">
-    <div id="myId2" class="jalendar"></div>
-    <div style="margin-top:10px">
-    <iframe name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=2&num=4" width="550" height="70" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+   		<div class="easyui-layout" style="width:100%;height:100%;">
+   			<div data-options="region:'north',collapsible:false" style="height:60%;">
+		   		<table id="data_grid" title="库存告急" class="easyui-datagrid" style="width:100%;height:100%"
+						data-options="
+						url:'model/get_commoditynum_datagrid.php',
+						method:'post',
+						fitColumns:true,
+						singleSelect:true,
+						scrollbarSize:0,
+						loadMsg:'实时更新...',
+						autoRowHeight:false,
+						showFooter:false
+						">
+				<thead>
+				<tr>
+				<!-- cname,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value  -->
+					<th field="cname" width="60">商品</th>
+					<th field="cnum" width="40" formatter='addColor'>库存</th>
+					<th field="small_unit"  width="10">单位</th>
+				</tr>
+				</thead>
+				</table>
+   			</div>
+   			<div data-options="region:'south',collapsible:false" style="height:40%;">
+			   	<div style="margin-top:10px">
+			    <iframe name="local_weather" src="http://i.tianqi.com/index.php?c=code&id=2&num=4" width="100%" height="100%" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
+			    </div>
+   			</div>
+   		</div>
     </div>
-    </div>
-   
 	</div>
-    
-    
-	<!-- <span>
-	<div class="easyui-panel" title="昨日销售额" style="width:200px;height:200px;padding:10px">
-	昨日 yyyy/mm/d 销售额共：10000元
-	今日 yyyy/mm/d 销售额共：10000元
-	</div>
-	<div class="easyui-panel" title="库存告急" style="width:200px;height:200px;padding:10px">
-	库存告急商品列表 Datalist
-	</div>
-	<div class="easyui-panel" title="动态公告" style="width:200px;height:200px;padding:10px">
-	动态公告 滚动效果
-	</div>
-	万年历、备忘录、天气
-	</span> -->
-<script type="text/javascript">
-	$(function () {
-		 $('#myId2').jalendar({
-	        customDay: '2016/12/04',
-	        color: '#023447',
-	        lang: 'CN'
-	    });
+<script>
+	function addColor(val,row,index){
+		    return "<font style='color:red;font-size:2em'>"+row.cnum+"</font>";
+		}
+	//加载销售额函数
+	function loadSaleMoney(){
+		$('#show_today_sale').load("./controller/load_salemoney.php?loadid=0");
+		$('#show_yesterday_sale').load("./controller/load_salemoney.php?loadid=1");
+		$('#show_month_sale').load("./controller/load_salemoney.php?loadid=2");
+	}
+	$(function(){
+		loadSaleMoney();
 	});
+	//实时刷新
+	setInterval("realTime()",1000*60);
+	function realTime() {
+		loadSaleMoney();
+		$('#data_grid').datagrid('reload');	
+	}
+	
 </script>
 </body>
 </html>

@@ -91,3 +91,6 @@ set aitem='修改',aitem_money=100,isrepay=0 where aid=9
 
 select * from tb_accounts
 where aitem like "%owe%";
+
+select cname,cnum,small_unit from tb_commodity,tb_type 
+where tb_commodity.tid=tb_type.tid order by cnum limit 0,8;

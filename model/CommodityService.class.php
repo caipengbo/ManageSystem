@@ -82,13 +82,16 @@
 			$result["rows"] = $rows;
 			echo json_encode($result);
 		 }
-		 // public function queryAllCommodityInfo() {
-		 // 	$db = new UseMysql();
-		 // 	$sql = "select cname,tname,small_unit,big_unit,cnum,ccost,csticker_price,cunit_value from tb_commodity,tb_type where tb_commodity.tid=tb_type.tid";
-		 // 	$res = $db->execute_dql($sql);
-		 // 	$db->close();
-		 // 	return $res;
-		 // }
+		 // 用于datagrid的查询库存函数（用于首页库存告急版块）
+		 public function queryCommodityCount($num) { //num表示显示的数目
+		 	$db = new UseMysql();
+			$sql = "select cname,cnum,small_unit from tb_commodity,tb_type 
+			where tb_commodity.tid=tb_type.tid order by cnum limit 0,$num";
+			$rows = array();
+			$rows = $db->execute_dql_2($sql);
+			$result["rows"] = $rows;
+			echo json_encode($result);
+		 }
 
 		 //更新商品信息
 		 public function updateCommodityInfo($oldcname,$newcname,$cunit_value,$ccost,$csticker_price) {
@@ -185,10 +188,10 @@
 			$result["rows"] = $rows;
 			echo json_encode($result);
 		 }
-		 // 统计今日销售金额
-		 public function countTodayMoney($starttime){
+		 // 统计销售金额（起始日期和结束日期）
+		 public function countMoney($starttime,$endtime){
 		 	$db = new UseMysql();
-		 	$where = " where stime>='$starttime' and stime<=now()";
+		 	$where = " where stime>='$starttime' and stime<='$endtime'";
 		 	$sql = "select sum(sale_money) as today from tb_sale" . $where;
 		 	$res = $db->execute_dql_2($sql);
 		 	// echo $sql;
