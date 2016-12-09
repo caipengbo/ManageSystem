@@ -11,8 +11,8 @@
 <body>
 	<div class="easyui-layout" style="width:1000px;height:440px;">
    	<div data-options="region:'west',collapsible:false" style="width:40%;">
-   		<div class="easyui-layout" style="width:100%;height:100%;">
-   			<div data-options="region:'north',collapsible:false" style="height:60%;">
+   		<div class="easyui-layout" style="width:100%;height:100%;" border='false'>
+   			<div data-options="region:'north',collapsible:false" style="height:59%;">
    				<div class="easyui-panel" title="公告" style="width:100%;height:100%;overflow:hidden">
 					<marquee direction="up" scrollamount="2" vspace="0px" width="100%" height="100%" onmouseout="this.start()" onmouseover="this.stop()">
                           	<ul style="font-size:25px">
@@ -25,7 +25,7 @@
                     </marquee>
 				</div>
    			</div>
-   			<div data-options="region:'south',collapsible:false" style="height:40%;">
+   			<div data-options="region:'south',collapsible:false" style="height:39%;">
 					<ul class="easyui-datalist" title="销售一览" lines="true" style="width:100%;height:100%">
 						<li>今日销售：<span id="show_today_sale"></span></li>
 						<li>昨日销售：<span id="show_yesterday_sale"></span></li>
@@ -34,9 +34,9 @@
    			</div>
    		</div>
    	</div>
-    <div data-options="region:'east',collapsible:false" style="width:60%;background:#eee">
-   		<div class="easyui-layout" style="width:100%;height:100%;">
-   			<div data-options="region:'north',collapsible:false" style="height:60%;">
+    <div data-options="region:'east',collapsible:false" style="width:58%;">
+   		<div class="easyui-layout" style="width:100%;height:100%;" border='false'>
+   			<div data-options="region:'north',collapsible:false" style="height:59%;">
 		   		<table id="data_grid" title="库存告急" class="easyui-datagrid" style="width:100%;height:100%"
 						data-options="
 						url:'model/get_commoditynum_datagrid.php',
@@ -58,7 +58,7 @@
 				</thead>
 				</table>
    			</div>
-   			<div data-options="region:'south',collapsible:false" style="height:40%;">
+   			<div data-options="region:'south',collapsible:false" style="height:39%;">
 			   	<div style="margin-top:10px">
 			    <iframe name="local_weather" src="http://i.tianqi.com/index.php?c=code&id=2&num=4" width="100%" height="100%" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>
 			    </div>
