@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>个人设置</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="css/easyui.css">
+	<link rel="stylesheet" type="text/css" href="css/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/app.css">
+	<link rel="stylesheet" type="text/css" href="css/sweetalert2.min.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="js/sweetalert2.min.js"></script>
+	<script type="text/javascript" src="login/js/md5.js"></script>
+</head>
+<body>
+	<div class="easyui-panel" id="view_position">
+		<form id="private_modify_form" method="post" action="./controller/private_modify.php">
+		<div>
+			<input class="easyui-textbox" name="username" label="用户名" style="width:32%;" data-options="disabled:true">
+			<input id="username_hidden" type="hidden" name="username">
+		</div>
+		<div>
+			<input class="easyui-textbox" label="姓名" name="name" style="width:32%;">
+		</div>
+		<div>
+			<input id="old_password" class="easyui-passwordbox" label="原密码" prompt="旧密码" iconWidth="28" style="width:32%;">
+		</div>
+		<div>
+			<input id="new_password" class="easyui-passwordbox" label="新密码" prompt="新密码" iconWidth="28" style="width:32%;">
+		</div>
+		<div>
+			<input id="repeat_password" name="newpsw" class="easyui-passwordbox" label="重复密码" prompt="重复新密码" iconWidth="28" validType="confirmPass['#new_password']" style="width:32%;">
+		</div>
+		</form>
+		<div>
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()" style="width:80px">修改</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()" style="width:80px;margin-left:20px">取消</a>
+		</div>
+	</div>
+	<script>
+		//获取本账户(session)页面数据
+		var oldPassword = "";
+		$(document).ready(function(){
+			$.ajax({
+				url:"controller/get_session_info.php",
+				dataType: "json",
+				success:function(data){
+					$('#private_modify_form').form('load',data);
+					oldPassword = data.password;
+					$('#username_hidden').val(data.username);
+					}
+			});
+		});
+		// 重复输入密码，验证
+		$.extend($.fn.validatebox.defaults.rules, {
+			confirmPass: {
+				validator: function(value, param){
+					var pass = $(param[0]).passwordbox('getValue');
+					return value == pass;
+				},
+				message: '密码不一致'
+			}
+		});
+		function submitForm(){
+			//完善时候，添加检测各输入框是否为空
+			$('#private_modify_form').form('submit',{
+				onSubmit:function(){
+					if (oldPassword !=  hex_md5($('#old_password').passwordbox('getValue'))) {
+						swal("原密码错误！","","error");
+						clearForm();
+						return false;
+					}
+					if ($('#new_password').passwordbox('getValue') != $('#repeat_password').passwordbox('getValue')) {
+						swal("新密码不一致！","","error");
+						clearForm();
+						return false;
+					}
+					return true;
+				},
+				success:function(data){
+					var dataobj = eval('('+ data +')');
+					if (dataobj.return_num == 1) {
+						alert("修改密码成功");
+						oldPassword = dataobj.newpsw;
+						// swal('添加成功!','','success')
+						clearForm();
+					} else {
+						alert("修改密码失败");
+					}
+				}
+			});
+		}
+		function clearForm(){
+			$('#old_password').passwordbox('clear');
+			$('#new_password').passwordbox('clear');
+			$('#repeat_password').passwordbox('clear');
+		}
+
+	</script>
+</body>
+</html>

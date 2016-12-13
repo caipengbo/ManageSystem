@@ -33,9 +33,11 @@
 	margin-left:30px; 
 }
 /*
-commodity_modify.html css
+private_setting.html css
 */
-
+#private_modify_form div{
+	margin-bottom:20px;
+}
 /*
 * sale_input.html css
 */

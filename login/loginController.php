@@ -1,4 +1,4 @@
-  <?php
+<?php
         require "../model/UserService.class.php";
          //必须有这句话，不然不会使用session
         session_start();
@@ -16,10 +16,16 @@
                 $us = new UserService();
                 $username = $_POST["username"];
                 $password = $_POST["password"];
-                $return_num = $us->checkUser($username,$password);
+                //用于在函数中为session传值
+                $name = ""; 
+                $flag = "";
+                $return_num = $us->checkUser($username,$password,$name,$flag);
                 //登陆成功，保存session
                 if ($return_num == 1) {
                     $_SESSION["username"] = $username;
+                    $_SESSION["password"] = $password;
+                    $_SESSION["name"] = $name;
+                    $_SESSION["flag"] = $flag;
                 }
                 echo $return_num;
             }

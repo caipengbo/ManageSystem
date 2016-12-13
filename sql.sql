@@ -3,6 +3,8 @@ use db_managesystem
 	-- 用户表 flag=1:店长   =2 店员  3游客 权限
 	create table tb_user(username varchar(15) primary key,password varchar(64),name varchar(20),,flag int not null);
 
+		update tb_user set password=md5('123') where username='123'
+			update tb_user set password='123' where username='123'
 	insert into tb_user values("123","123","myth",1,);
 	-- 账目表 isrepay=1 已经还款  =0 没还款
  	create table tb_accounts(aid int primary key auto_increment, aitem text, aitem_money float(10,2), isrepay int, atime datetime);
