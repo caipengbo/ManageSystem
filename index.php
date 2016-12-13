@@ -83,16 +83,11 @@
 				<li><a href="javascript:addTab('账目管理','account_manage.html')">账目管理</a></li>
 				<li><a href="javascript:addTab('账目查看','account_view.html')">账目查看</a></li>
 			</div>
-			<div title="系统管理" data-options="iconCls:'icon-setting'"">
-				<li><a href="javascript:addTab('个人设置','')">个人设置</a></li>
-				<li><a href="javascript:addTab('所有用户','')">所有用户</a></li>
-				<li><a href="javascript:addTab('系统设置','')">系统设置</a></li>
+			<div title="用户管理" data-options="iconCls:'icon-setting'"">
+				<li><a href="javascript:addTab('个人设置','private_setting.html')">个人设置</a></li>
+				<li><a href="javascript:addTab('所有用户','allusers_setting.html')">所有用户</a></li>
 			</div>
-
 		</div>
-
-	<!-- 
-	<a href="#" class="easyui-linkbutton" onclick="addTab('easyui','http://jeasyui.com/')">easyui</a> -->
 	</div>
 
 	<!-- 中部主视图 -->
