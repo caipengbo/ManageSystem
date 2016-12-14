@@ -85,8 +85,22 @@
 		</div>
 	</div>
 	<script>
-		$(function(){
+		$(document).ready(function(){
 			$('#data_grid').datagrid('clientPaging');
+			//自定义datagrid 的pagination对象
+			var p = $('#data_grid').datagrid('getPager');
+			if (p){
+           		$(p).pagination({
+           			showRefresh:false,
+           			buttons: [{
+           				//由于使用了自己添加的客户端分页功能，使得原有的datagrid分页刷新按钮失灵，所以自己添加一个刷新按钮
+           				iconCls:'icon-reload',
+           				handler:function(){
+           					$('#data_grid').datagrid('reload');
+           				}
+           			}]
+           		});
+           	}
 		});
 		var url;
 		function popDlg(){	

@@ -18,10 +18,12 @@
 		<form id="private_modify_form" method="post" action="./controller/private_modify.php">
 		<div>
 			<input class="easyui-textbox" name="username" label="用户名" style="width:32%;" data-options="disabled:true">
+			<!-- 因为禁用了上一个标签，使得username无法通过上一个控件传递表单数据 
+			所以使用hidden控件-->
 			<input id="username_hidden" type="hidden" name="username">
 		</div>
 		<div>
-			<input class="easyui-textbox" label="姓名" name="name" style="width:32%;">
+			<input id="name" class="easyui-textbox" label="姓名" name="name" style="width:32%;">
 		</div>
 		<div>
 			<input id="old_password" class="easyui-passwordbox" label="原密码" prompt="旧密码" iconWidth="28" style="width:32%;">
@@ -81,12 +83,13 @@
 				success:function(data){
 					var dataobj = eval('('+ data +')');
 					if (dataobj.return_num == 1) {
-						alert("修改密码成功");
+						swal("修改成功","","success");
 						oldPassword = dataobj.newpsw;
+						$('#name').textbox('setValue',dataobj.new_name);
 						// swal('添加成功!','','success')
 						clearForm();
 					} else {
-						alert("修改密码失败");
+						swal("发生未知的错误","","error");
 					}
 				}
 			});

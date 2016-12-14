@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>店员管理</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="css/easyui.css">
+	<link rel="stylesheet" type="text/css" href="css/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/app.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/easyui-lang-zh_CN.js"></script>
+</head>
+<body>
+	<div class="easyui-panel" id="view_position_2">
+		<div id="user_manage">
+		<table id="data_grid" title="所有商品" class="easyui-datagrid" style="width:900px;height:380px"
+		data-options="
+		url:'model/get_employee_datagrid.php',
+		method:'post',
+		toolbar:'#toolbar',
+		fitColumns:true,
+		rownumbers:true	,
+		singleSelect:true,
+		striped:true,
+		pagination:true
+		">
+		<thead>
+			<tr>
+				<th field="username" width="80">用户名</th>
+				<th field="name"  width="50">姓名</th>
+				<th field="flag" width="60" formatter="formatFlag">角色</th>
+			</tr>
+		</thead>
+		</table>
+		<div id="toolbar">
+			<a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="popAddDlg()">添加店员</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="popUpdateDlg()">修改信息</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-no" plain="true" onclick="deleteEmployee()">删除店员</a>
+		</div>
+		</div> <!-- user_manage div end -->
+		<!-- 对话框 -->
+		<!-- add dialog begin-->
+		<div id="adddlg" class="easyui-dialog" style="width:400px;height:298px;padding:10px 20px"
+		closed="true" buttons="#adddlg-buttons">
+		<form id="addemployee_form" method="post" action="controller/add_employee.php">
+			<div style="margin-bottom:20px">
+				<!-- <span>商品名称：</span> -->
+				<input class="easyui-textbox" data-options="required:true" name="username" label="用户名" style="width:75%;">
+			</div>
+			<div style="margin-bottom:20px">
+			<input class="easyui-passwordbox" label="初始密码" name="password" data-options="required:true" iconWidth="28" style="width:75%;">
+			</div>
+			<div style="margin-bottom:20px">
+			<input id="name" data-options="required:true" class="easyui-textbox" label="姓名" name="name" style="width:75%;">
+			</div>
+		</form>
+		</div>
+		<div id="adddlg-buttons">
+			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="addEmployee()" style="width:80px">确认</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#adddlg').dialog('close')" style="width:80px;margin-left:20px;margin-right:40px">取消</a>
+		</div> 	<!-- add dialog end -->
+	<!-- update dialog begin -->
+	<div id="updatedlg" class="easyui-dialog" style="width:400px;height:298px;padding:10px 20px"
+		closed="true" buttons="#updatedlg-buttons">
+		<form id="updateemployee_form" method="post" action="controller/update_employee.php">
+			<div style="margin-bottom:20px">
+				<!-- <span>商品名称：</span> -->
+				<input class="easyui-textbox" data-options="required:true,disabled:true" name="username" label="用户名" style="width:75%;">
+			</div>
+			<div style="margin-bottom:20px">
+			<input id="name" data-options="required:true" class="easyui-textbox" label="姓名" name="name" style="width:75%;">
+			</div>
+			<div style="margin-bottom:20px">
+			<input class="easyui-passwordbox" label="重设密码" name="new_password" iconWidth="28" style="width:75%;">
+			</div>
+		</form>
+		</div>
+		<div id="updatedlg-buttons">
+			<a href="javascript:void(0)" class="easyui-linkbutton"  iconCls="icon-ok" onclick="updateEmployee()" style="width:80px">修改</a>
+			<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#updatedlg').dialog('close')" style="width:80px;margin-left:20px;margin-right:40px">取消</a>
+		</div> <!-- update dialog end --><!-- 对话框结束-->
+	</div>
+	<script>
+		$(document).ready(function(){
+			$('#data_grid').datagrid('clientPaging');
+			//自定义datagrid 的pagination对象
+			var p = $('#data_grid').datagrid('getPager');
+			if (p){
+           		$(p).pagination({
+           			showRefresh:false,
+           			buttons: [{
+           				//由于使用了自己添加的客户端分页功能，使得原有的datagrid分页刷新按钮失灵，所以自己添加一个刷新按钮
+           				iconCls:'icon-reload',
+           				handler:function(){
+           					$('#data_grid').datagrid('reload');
+           				}
+           			}]
+           		});
+           	}
+		});
+
+		function formatFlag(val,row){
+			if (val == 2){
+				return '<span style="color:blue;">店员</span>';
+			} else {
+				return "店长";
+			}
+		}
+ 		function popAddDlg(){	
+			$('#adddlg').dialog({
+				onClose:function(){
+					$('#addemployee_form').form('clear');
+				}
+			});
+			$('#adddlg').dialog('open').dialog('setTitle','添加新店员');
+		}
+		function addEmployee(){
+			$('#addemployee_form').form('submit',{
+				onSubmit: function(){
+				 	return $(this).form('validate'); //完善
+				 },
+				success:function(data){
+					if (data == 1) {
+						$('#adddlg').dialog('close');
+						$('#data_grid').datagrid('reload');	
+						alert("添加成功！");
+					} else {
+						alert("用户名已存在！添加失败！！");
+					} 
+				}
+			});
+		}
+		var url;
+		function popUpdateDlg() {
+			var row = $('#data_grid').datagrid('getSelected');
+			if (row){
+				$('#updatedlg').dialog('open').dialog('setTitle','修改店员信息');
+				$('#updateemployee_form').form('load',row);
+				url = 'controller/update_employee.php?username='+row.username;
+			}
+		}
+		function updateEmployee() {
+			$('#updateemployee_form').form('submit',{
+				url: url,
+				onSubmit: function(){
+					return $(this).form('validate');
+				},
+				success: function(result){
+					if (result == 1){
+						$('#updatedlg').dialog('close');
+						$('#data_grid').datagrid('reload');	
+						alert("修改成功");
+					} else {
+						alert("修改失败");
+					}
+				}
+			});
+		}
+		function deleteEmployee(){
+			var row = $('#data_grid').datagrid('getSelected');
+			if (row){
+				$.messager.confirm('确认','确定删除该店员信息吗?',function(r){
+					if (r){
+						$.post('controller/delete_employee.php',{username:row.username},function(result){
+							if (result == 1){
+								$('#data_grid').datagrid('reload'); 
+								alert("该店员已删除");
+							} else {
+								alert("删除失败");
+							}
+						},'json');
+					}
+				});
+			}
+		}
+	</script>
+</body>
+</html>

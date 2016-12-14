@@ -19,7 +19,6 @@
 				<span>销售单号：</span>
 				<span><input id="sid" class="easyui-textbox" data-options="prompt:'请输入销售单号...',"
 				 style="width:200px"></span>	
-
 				 <span style="margin-left:10px">销售人员：</span>
 				<span><input id="username" class="easyui-textbox" data-options="prompt:'请输入销售人员...',"
 				 style="width:200px"></span>	
@@ -37,7 +36,6 @@
 				 <span style="margin-left:60px"><a href="javascript:doSearch()" class="easyui-linkbutton" data-options="iconCls:'icon-search'"  style="width:88px">查询</a></span>
 			</div>
 		</div>
-
 		<!-- salelist_search end -->
 		<table id="data_grid" class="easyui-datagrid" style="width:900px;height:360px"
 		>
@@ -98,6 +96,20 @@
 		});
 		$(function(){
 			$('#data_grid').datagrid('clientPaging');
+			//自定义datagrid 的pagination对象
+			var p = $('#data_grid').datagrid('getPager');
+			if (p){
+           		$(p).pagination({
+           			showRefresh:false,
+           			buttons: [{
+           				//由于使用了自己添加的客户端分页功能，使得原有的datagrid分页刷新按钮失灵，所以自己添加一个刷新按钮
+           				iconCls:'icon-reload',
+           				handler:function(){
+           					$('#data_grid').datagrid('reload');
+           				}
+           			}]
+           		});
+           	}
 		});
 		function doSearch(){
 			// alert($('#stime').datetimebox('getValue'));

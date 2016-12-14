@@ -19,13 +19,19 @@
 		<script src="js/jquery.min.js" type="text/javascript"></script>
 		<script src="js/jquery.easyui.min.js" type="text/javascript"></script>
 		<script type="text/javascript" src="js/sweetalert2.min.js"></script>
+		<script type="text/javascript" src="login/js/md5.js"></script>
 	</head>
 	<body class="easyui-layout panel-noscroll">
 		<!-- 顶部 -->
 		<div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">
-			<span class="fontlogo">华名烟酒店</span>
+			<span class="fontlogo">华名烟酒店销售系统</span>
 			<div style="float:right">
-				<span id="clock"></span>，您好，店长： 
+				<span id="clock"></span>,您好<?php 
+					if ($_SESSION['flag']==1) {
+						echo "店长";
+					} else
+						echo "店员";
+					?>
 				<a href="javascript:void(0)" id="" class="easyui-menubutton" data-options="menu:'#user_setting'">
 					<?php 
 					echo $_SESSION['name'];
@@ -35,13 +41,36 @@
 					<div><a href="javascript:openInfoDialog()">个人设置</a></div>
 					<div><a href="javascript:exitSystem()">退出</a></div>
 				</div>
-				<div id="modify_info_dialog" class="easyui-dialog" closed="true" style="width:200px;height:150px">修改个人信息</div>
-				<div id="modify_psw_dialog" class="easyui-dialog" closed="true" style="width:200px;height:150px">修改密码</div>
+				<!-- 修改个人信息对话框 -->
+				<div id="modify_info_dialog" class="easyui-dialog" closed="true"   buttons="#dlg-buttons" style="width:400px;height:298px;padding-left:30px;padding-right:30px;padding-top:10px">
+					<form id="private_modify_form" method="post" action="./controller/private_modify.php">
+						<div>
+							<input class="easyui-textbox" name="username" label="用户名" style="width:75%;" data-options="disabled:true">
+							<input id="username_hidden" type="hidden" name="username">
+						</div>
+						<div>
+							<input class="easyui-textbox" label="姓名" name="name" style="width:75%;">
+						</div>
+						<div>
+							<input id="old_password" class="easyui-passwordbox" label="原密码" prompt="旧密码" iconWidth="28" style="width:75%;">
+						</div>
+						<div>
+							<input id="new_password" class="easyui-passwordbox" label="新密码" prompt="新密码" iconWidth="28" style="width:75%;">
+						</div>
+						<div>
+							<input id="repeat_password" name="newpsw" class="easyui-passwordbox" label="重复密码" prompt="重复新密码" iconWidth="28" validType="confirmPass['#new_password']" style="width:75%;">
+						</div>
+					</form>
+					<div id="dlg-buttons">
+						<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="submitForm()">修改</a>
+						<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#modify_info_dialog').dialog('close')">取消</a>
+					</div>
+				</div><!-- 修改个人信息对话框结束 -->
 			</div>
 		</div>
 		<!-- 左侧手风琴 -->
 		<div data-options="region:'west',split:true,title:'功能菜单'" style="width:18%;padding:0px;overflow:hidden">
-			<div class="easyui-accordion" style="width:100%;height: 100%;padding:0">
+			<div id="left_accordion" class="easyui-accordion" style="width:100%;height: 100%;padding:0">
 				<div title="商品管理" data-options="iconCls:'icon-production'" style="padding:0px;">
 					<li><a href="javascript:addTab('商品信息录入','commodity_input.html')">商品信息录入</a></li>
 					<li><a href="javascript:addTab('商品信息更改','commodity_modify.html')">商品信息更改</a></li>
@@ -69,7 +98,7 @@
 				</div>
 				<div title="用户管理" data-options="iconCls:'icon-setting'"">
 					<li><a href="javascript:addTab('个人设置','private_setting.html')">个人设置</a></li>
-					<li><a href="javascript:addTab('所有用户','allusers_setting.html')">所有用户</a></li>
+					<li><a href="javascript:addTab('店员管理','employee_manage.html')">所有店员</a></li>
 				</div>
 			</div>
 		</div>
@@ -82,8 +111,6 @@
 				</div>
 			</div>
 		</div>
-
-
 		<!-- 页脚底部 -->
 		<div data-options="region:'south',border:false" style="height:30px;background:#A9FACD;padding:2px;text-align:center;font-size:12px;overflow:hidden">
 			Copyright © 2014 - 2018 All Rights Reserved<br>CaiPengbo Database project
@@ -108,12 +135,67 @@
 			var curTime = new Date();
 			$("#clock").html(curTime.toLocaleString());
 		}
-		//
+		//打开修改个人信息对话框
+		var oldPassword = "";
 		function openInfoDialog(){
-			$('#modify_info_dialog').dialog('open');
+			$('#modify_info_dialog').dialog({
+				onClose:function(){
+					clearForm();
+				}
+			});
+			$('#modify_info_dialog').dialog('open').dialog('setTitle','个人设置');
+			$.ajax({
+				url:"controller/get_session_info.php",
+				dataType: "json",
+				success:function(data){
+					$('#private_modify_form').form('load',data);
+					oldPassword = data.password;
+					$('#username_hidden').val(data.username);
+					}
+			});
 		}
-		function openPswDialog(){
-			$('#modify_psw_dialog').dialog('open');
+		// 重复输入密码，验证
+		$.extend($.fn.validatebox.defaults.rules, {
+			confirmPass: {
+				validator: function(value, param){
+					var pass = $(param[0]).passwordbox('getValue');
+					return value == pass;
+				},
+				message: '密码不一致'
+			}
+		});
+		//个人设置表单（和private_setting.html功能一样）
+		function submitForm(){
+			$('#private_modify_form').form('submit',{
+				onSubmit:function(){
+					if (oldPassword !=  hex_md5($('#old_password').passwordbox('getValue'))) {
+						alert("原密码错误");
+						clearForm();
+						return false;
+					}
+					if ($('#new_password').passwordbox('getValue') != $('#repeat_password').passwordbox('getValue')) {
+						alert("新密码不一致！");
+						clearForm();
+						return false;
+					}
+					return true;
+				},
+				success:function(data){
+					var dataobj = eval('('+ data +')');
+					if (dataobj.return_num == 1) {
+						oldPassword = dataobj.newpsw;
+						$('#modify_info_dialog').dialog('close');
+						swal('已修改!','','success');
+					} else {
+						alert("发生未知的错误");
+					}
+				}
+			});
+		}
+		function clearForm(){
+			$('#old_password').passwordbox('clear');
+			$('#new_password').passwordbox('clear');
+			$('#repeat_password').passwordbox('clear');
 		}
 		//退出系统
 		function exitSystem(){

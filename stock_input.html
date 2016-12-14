@@ -75,18 +75,18 @@
 						alert("商品已入库！");
 						$('#stock_input').form('clear');
 						clearPanel();
+						//重新加载combobox的内容
+						$('#commodity_combobox').combobox('reload'); 
 					} else {
 						alert("入库失败!");
 					} 
 				}
 			});
-			
 		}
 		function clearForm(){
 			$('#stock_input').form('clear');
 			clearPanel();
 		}
-
 	</script>
 </body>
 </html>
