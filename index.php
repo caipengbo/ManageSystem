@@ -25,18 +25,17 @@
 		<!-- 顶部 -->
 		<div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px">
 			<span class="fontlogo">华名烟酒店销售系统</span>
-			<div style="float:right">
-				<span id="clock"></span>,您好<?php 
+			<div style="float:right;margin-top:10px">
+				<span id="clock" style="font-size:1.5em"></span>
+				<span style="font-size:1.5em"><?php 
 					if ($_SESSION['flag']==1) {
 						echo "店长";
 					} else
 						echo "店员";
-					?>
-				<a href="javascript:void(0)" id="" class="easyui-menubutton" data-options="menu:'#user_setting'">
-					<?php 
-					echo $_SESSION['name'];
-					?>
-				</a>
+				?>
+				</span>
+				<a href="javascript:void(0)" class="easyui-menubutton" data-options="menu:'#user_setting'">
+				<span style="font-size:1.5em"><?php echo $_SESSION['name'];?></span></a>
 				<div id="user_setting">
 					<div><a href="javascript:openInfoDialog()">个人设置</a></div>
 					<div><a href="javascript:exitSystem()">退出</a></div>
@@ -98,7 +97,7 @@
 				</div>
 				<div title="用户管理" data-options="iconCls:'icon-setting'"">
 					<li><a href="javascript:addTab('个人设置','private_setting.html')">个人设置</a></li>
-					<li><a href="javascript:addTab('店员管理','employee_manage.html')">所有店员</a></li>
+					<li><a href="javascript:addTab('店员管理','employee_manage.html')">店员管理</a></li>
 				</div>
 			</div>
 		</div>
@@ -116,8 +115,23 @@
 			Copyright © 2014 - 2018 All Rights Reserved<br>CaiPengbo Database project
 		</div>
 		<script>
+		//获取session信息
+		var loginuser; //登录的用户
+		$(document).ready(function(){
+			$.ajax({
+				url:"controller/get_session_info.php",
+				dataType: "json",
+				success:function(data){
+					loginuser = data;
+					}
+			});
+		});
 		//在主视图中添加标签
 		function addTab(title, url){
+			if (loginuser.flag!=1 && (title == "商品信息录入"||title =="商品信息更改"||title =="进货入库"||title =="商品损耗"||title =="账目管理"||title =="店员管理")) {
+				swal("对不起,权限不足","","error");
+				return false;
+			}
 			if ($('#main-view').tabs('exists', title)){
 				$('#main-view').tabs('select', title);
 			} else {
@@ -144,15 +158,9 @@
 				}
 			});
 			$('#modify_info_dialog').dialog('open').dialog('setTitle','个人设置');
-			$.ajax({
-				url:"controller/get_session_info.php",
-				dataType: "json",
-				success:function(data){
-					$('#private_modify_form').form('load',data);
-					oldPassword = data.password;
-					$('#username_hidden').val(data.username);
-					}
-			});
+			$('#private_modify_form').form('load',loginuser);
+			oldPassword = loginuser.password;
+			$('#username_hidden').val(loginuser.username);
 		}
 		// 重复输入密码，验证
 		$.extend($.fn.validatebox.defaults.rules, {

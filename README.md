@@ -7,4 +7,8 @@ HTML5 + CSS3 + JQuery-EasyUI-1.5
 # Back-end
 PHP5.3.4
 
-#Start on September 10,2016
+#Start
+ September 10,2016
+#Finish V1.0
+ December 15,2016
+ 
