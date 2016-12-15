@@ -28,7 +28,12 @@
 		}
     function updateUser($username,$name,$newpsw) {
       $db = new UseMysql();
-      $sql = "update tb_user set name='$name',password=md5('$newpsw') where username='$username'";
+      $sql = "";
+      if (empty($newpsw)) {
+        $sql = "update tb_user set name='$name' where username='$username'";
+      } else {
+         $sql = "update tb_user set name='$name',password=md5('$newpsw') where username='$username'";
+      }
       $res = $db->execute_dml($sql);
       $db->close();
       return $res;//bool

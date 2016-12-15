@@ -12,7 +12,7 @@
 			$res[$i] = 0.0;
 		}
 		for ($i=0; $i < count($arr); $i++) { 
-			$j = intval($arr[$i][0]) - 1;
+			$j = intval($arr[$i][0]);
 			$res[$j] = $arr[$i][1];
 		}
 		return $res;

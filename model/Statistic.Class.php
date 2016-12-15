@@ -7,7 +7,6 @@
 	{
 		
 		public function __construct(){}
-
 		//年销售趋势
 		public function yearsTrend($year) {
 			$db = new UseMysql();

@@ -8,9 +8,9 @@
 		 public function checkCommodity($name) {
 		    $db = new UseMysql();
 		 	$sql = "select * from tb_commodity where cname='$name'";
-		 	$res = $db->check_dql_isnull($sql);
+		 	$res = $db->check_dql_null($sql);
 		 	$db->close();
-		 	if(!empty($res)){
+		 	if(!$res){
 		 		return true; //存在
 		 	} else {
 		 		return false;

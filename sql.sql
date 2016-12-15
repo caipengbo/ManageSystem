@@ -3,9 +3,9 @@ use db_managesystem
 	-- 用户表 flag=1:店长   =2 店员  权限
 	create table tb_user(username varchar(15) primary key,password varchar(64),name varchar(20),,flag int not null);
 
-		update tb_user set password=md5('123') where username='123'
-			update tb_user set password='123' where username='123'
-	insert into tb_user values("1234",md5("123"),"Tom",2,);
+	update tb_user set password=md5('123') where username='123'
+	update tb_user set password='123' where username='123'
+	insert into tb_user values("admin",md5("123"),"Myth",1);
 	-- 账目表 isrepay=1 已经还款  =0 没还款
  	create table tb_accounts(aid int primary key auto_increment, aitem text, aitem_money float(10,2), isrepay int, atime datetime);
 	insert into tb_accounts(aitem, aitem_money, isrepay, atime) 
@@ -73,6 +73,9 @@ from tb_sale where stime>"2016-10-21" group by year(stime), month(stime),day(sti
 
 select sum(sale_money) from tb_sale where stime>"2016-10-25 00:00:00" and stime<now()
 
+select hour(stime),sum(sale_money) from tb_sale 
+ where year(stime)='2016' and month(stime)='12' and day(stime)='15'
+group by hour(stime) order by hour(stime) asc
 
 
 select month(stime),sum(ccost * snum) from tb_commodity,tb_sale,tb_saledetails 

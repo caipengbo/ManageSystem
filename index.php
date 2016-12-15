@@ -35,7 +35,7 @@
 				?>
 				</span>
 				<a href="javascript:void(0)" class="easyui-menubutton" data-options="menu:'#user_setting'">
-				<span style="font-size:1.5em"><?php echo $_SESSION['name'];?></span></a>
+				<span id="login_user" style="font-size:1.5em"></span></a>
 				<div id="user_setting">
 					<div><a href="javascript:openInfoDialog()">个人设置</a></div>
 					<div><a href="javascript:exitSystem()">退出</a></div>
@@ -123,6 +123,7 @@
 				dataType: "json",
 				success:function(data){
 					loginuser = data;
+					$("#login_user").text(loginuser.name);
 					}
 			});
 		});
@@ -182,7 +183,7 @@
 						return false;
 					}
 					if ($('#new_password').passwordbox('getValue') != $('#repeat_password').passwordbox('getValue')) {
-						alert("新密码不一致！");
+						alert("两次密码不一致!");
 						clearForm();
 						return false;
 					}
@@ -191,11 +192,16 @@
 				success:function(data){
 					var dataobj = eval('('+ data +')');
 					if (dataobj.return_num == 1) {
+						//更新loginuser对象
+						loginuser.name = dataobj.new_name;
+						loginuser.password = dataobj.newpsw;
 						oldPassword = dataobj.newpsw;
+						//更新右上角名字
+						$("#login_user").text(loginuser.name);
 						$('#modify_info_dialog').dialog('close');
 						swal('已修改!','','success');
 					} else {
-						alert("发生未知的错误");
+						swal('发生未知的错误!','','error');
 					}
 				}
 			});
@@ -222,7 +228,7 @@
 						location.href = "login.html";
 					}
 					else {
-						alert("退出失败");
+						swal('退出失败!','','error');
 					}
 				});
 			});

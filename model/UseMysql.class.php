@@ -55,19 +55,15 @@ class UseMysql {
      }
       $i++;
       }
-    /*  if ( !empty($result) ) {
-            while ( $row = mysqli_fetch_array($result,MYSQL_ASSOC)) {
-                echo $row['id'] . " " . $row['name'] . " " . $row['password'] . "<br>";
-            }
-          } */
     mysqli_free_result($result);
     return $arr;
   }
   //检测查询语句是否为空
-  public function check_dql_isnull($sql) {
+  public function check_dql_null($sql) {
     $arr = array();
     $result = mysqli_query($this->connect,$sql) or die(mysqli_error($this->connect));
-    if (empty($result)) {
+    //mysqli_query执行select会返回一个mysqli_resul对象可以用var_dump查询对象里的内容
+    if ($result->num_rows == 0) {
       return true; // is null 
     } else {
       return false; // is not null

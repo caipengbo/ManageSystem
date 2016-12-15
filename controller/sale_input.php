@@ -9,7 +9,9 @@
 		$itemnum = intval($_POST['itemnum']);
 		$salemoney = $_POST['salemoney'];
 		$getmoney = $_POST['getmoney'];
-		$sql = "insert into tb_sale values('$sid',$salemoney,$getmoney,$itemnum,'123',now());";
+		session_start();
+		$username = $_SESSION['name'];
+		$sql = "insert into tb_sale values('$sid',$salemoney,$getmoney,$itemnum,'$username',now());";
 		for ($i=0; $i < $itemnum-1; $i++) { 
 			$id = $item[$i]['cid'];
 			$num = $item[$i]['snum'];

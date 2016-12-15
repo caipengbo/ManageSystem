@@ -9,7 +9,9 @@
 	    if ($rtn) {
 	    	session_start();
 	    	$_SESSION["name"] = $name;
-	    	$_SESSION["password"] = md5($newpsw);
+	    	if (!empty($newpsw)) { //有可能用户没输入新密码，只修改姓名
+	    		$_SESSION["password"] = md5($newpsw);
+	    	}
 	    	$arr = array(
 	    		'return_num' => 1,
 	    		'new_name'=> $_SESSION["name"],
