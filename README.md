@@ -1,6 +1,7 @@
 # ManageSystem
 This is  a Tobacoo and Wine Shop Manage System ,which is my database course project.
 
+About 4500 Lines code
 # Front-end
 HTML5 + CSS3 + JQuery-EasyUI-1.5
 
